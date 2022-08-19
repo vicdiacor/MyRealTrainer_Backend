@@ -1,8 +1,8 @@
 package com.MyRealTrainer.service;
 
-import com.MyRealTrainer.model.Client;
-import com.MyRealTrainer.model.Role;
-import com.MyRealTrainer.repository.ClientRepository;
+import com.MyRealTrainer.model.Usuario;
+import com.MyRealTrainer.model.Rol;
+import com.MyRealTrainer.repository.UsuarioRepository;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -19,23 +19,21 @@ import org.springframework.stereotype.Service;
 public class CustomUserDetailsService implements UserDetailsService  {
 
     @Autowired
-    private ClientRepository clientRepository;
+    private UsuarioRepository UsuarioRepository;
 
-    public CustomUserDetailsService(ClientRepository clientRepository) {
-        this.clientRepository = clientRepository;
-    }
+  
 
     @Override
     public UserDetails loadUserByUsername(String nameOrEmail) throws UsernameNotFoundException {
-        Client user = clientRepository.findByNameOrEmail(nameOrEmail, nameOrEmail)
+        Usuario user = UsuarioRepository.findByNombreOrEmail(nameOrEmail, nameOrEmail)
         .orElseThrow(() ->
                 new UsernameNotFoundException("User not found with username or email:" + nameOrEmail));
         return new org.springframework.security.core.userdetails.User(user.getEmail(),
          user.getPassword(), mapRolesToAuthorities(user.getRoles()));
 }
 
-    private Collection< ? extends GrantedAuthority> mapRolesToAuthorities(Set<Role> roles){
-    return roles.stream().map(role -> new SimpleGrantedAuthority(role.getName())).collect(Collectors.toList());
+    private Collection< ? extends GrantedAuthority> mapRolesToAuthorities(Set<Rol> roles){
+    return roles.stream().map(role -> new SimpleGrantedAuthority(role.getNombre())).collect(Collectors.toList());
     }
     
 }

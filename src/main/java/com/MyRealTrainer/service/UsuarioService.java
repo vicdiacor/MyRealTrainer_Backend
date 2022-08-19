@@ -1,35 +1,35 @@
 package com.MyRealTrainer.service;
 
-import com.MyRealTrainer.repository.ClientRepository;
+import com.MyRealTrainer.repository.UsuarioRepository;
 
 import java.util.List;
 
-import com.MyRealTrainer.model.Client;
+import com.MyRealTrainer.model.Usuario;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ClientService {
+public class UsuarioService {
 
 	@Autowired
-    private ClientRepository repository;
+    private UsuarioRepository repository;
     
     
-	public List<Client> findAll(){
+	public List<Usuario> findAll(){
         return repository.findAll();
     }
 
-	public Client findById(Long id){ 
+	public Usuario findById(Long id){ 
         return repository.findById(id).orElse(null);
     }
 
-    public Client findByEmail(String email){ 
+    public Usuario findByEmail(String email){ 
         return repository.findByEmail(email).orElse(null);
     }
 
-    public Client findByNameOrEmail(String name, String email){ 
-        return repository.findByNameOrEmail(name,email).orElse(null);
+    public Usuario findByNameOrEmail(String name, String email){ 
+        return repository.findByNombreOrEmail(name,email).orElse(null);
     }
 
     public Boolean existsByEmail(String email){ 
@@ -39,8 +39,8 @@ public class ClientService {
  
 
 
-    public Client save(Client client){ 
-        return repository.save(client);
+    public Usuario save(Usuario Usuario){ 
+        return repository.save(Usuario);
     }
 
     public void deleteById(Long id){ 
