@@ -101,7 +101,7 @@ public class AuthController {
 
         
 
-        Rol roles = rolRepository.findByName("ROLE_USER").get();
+        Rol roles = rolRepository.findByNombre("ROLE_USER").get();
         user.setRoles(Collections.singleton(roles));
         
         usuarioRepository.save(user);
