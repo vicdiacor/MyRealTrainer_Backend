@@ -1,19 +1,23 @@
 package com.MyRealTrainer.model;
 import javax.persistence.*;
-import org.springframework.lang.NonNull;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 @Entity
-@Table(name = "roles")
-public class Rol {
+@Table(name = "valores_metricas_textuales")
+public class ValorMetricaTextual extends ValorMetrica{
+    
+    // Attributes
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
-    @NonNull
-    @Enumerated(EnumType.STRING)
-    private TipoRol tipoRol;
 
+    @NotBlank
+    @Size(max=300)
+    private String valor;
+
+    // Methods
 
     public Long getId() {
         return id;
@@ -23,49 +27,46 @@ public class Rol {
         this.id = id;
     }
 
-
-    public String getTipoRol() {
-        return tipoRol.toString();
+    public String getValor() {
+        return valor;
     }
 
-
-    public void setTipoRol(TipoRol tipoRol) {
-        this.tipoRol = tipoRol;
+    public void setValor(String valor) {
+        this.valor = valor;
     }
-
-    
 
     @Override
     public int hashCode() {
         final int prime = 31;
-        int result = 1;
+        int result = super.hashCode();
         result = prime * result + ((id == null) ? 0 : id.hashCode());
-        result = prime * result + ((tipoRol == null) ? 0 : tipoRol.hashCode());
+        result = prime * result + ((valor == null) ? 0 : valor.hashCode());
         return result;
     }
-
 
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
-        if (obj == null)
+        if (!super.equals(obj))
             return false;
         if (getClass() != obj.getClass())
             return false;
-        Rol other = (Rol) obj;
+        ValorMetricaTextual other = (ValorMetricaTextual) obj;
         if (id == null) {
             if (other.id != null)
                 return false;
         } else if (!id.equals(other.id))
             return false;
-        if (tipoRol != other.tipoRol)
+        if (valor == null) {
+            if (other.valor != null)
+                return false;
+        } else if (!valor.equals(other.valor))
             return false;
         return true;
     }
 
-    public Rol() {
+    public ValorMetricaTextual() {
     }
 
-    
 }

@@ -5,6 +5,7 @@ import java.util.Collections;
 
 import com.MyRealTrainer.model.Usuario;
 import com.MyRealTrainer.model.Rol;
+import com.MyRealTrainer.model.TipoRol;
 import com.MyRealTrainer.payload.LoginDto;
 import com.MyRealTrainer.payload.SignUpDto;
 import com.MyRealTrainer.repository.UsuarioRepository;
@@ -101,7 +102,7 @@ public class AuthController {
 
         
 
-        Rol roles = rolRepository.findByNombre("ROLE_USER").get();
+        Rol roles = rolRepository.findByTipoRol(TipoRol.CLIENTE).get();
         user.setRoles(Collections.singleton(roles));
         
         usuarioRepository.save(user);

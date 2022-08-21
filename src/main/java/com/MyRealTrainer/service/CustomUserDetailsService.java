@@ -2,6 +2,7 @@ package com.MyRealTrainer.service;
 
 import com.MyRealTrainer.model.Usuario;
 import com.MyRealTrainer.model.Rol;
+import com.MyRealTrainer.model.TipoRol;
 import com.MyRealTrainer.repository.UsuarioRepository;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -25,6 +26,7 @@ public class CustomUserDetailsService implements UserDetailsService  {
 
     @Override
     public UserDetails loadUserByUsername(String nameOrEmail) throws UsernameNotFoundException {
+        
         Usuario user = UsuarioRepository.findByNombreOrEmail(nameOrEmail, nameOrEmail)
         .orElseThrow(() ->
                 new UsernameNotFoundException("User not found with username or email:" + nameOrEmail));
@@ -33,7 +35,7 @@ public class CustomUserDetailsService implements UserDetailsService  {
 }
 
     private Collection< ? extends GrantedAuthority> mapRolesToAuthorities(Set<Rol> roles){
-    return roles.stream().map(role -> new SimpleGrantedAuthority(role.getNombre())).collect(Collectors.toList());
+    return roles.stream().map(role -> new SimpleGrantedAuthority(role.getTipoRol())).collect(Collectors.toList());
     }
     
 }
