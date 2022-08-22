@@ -55,6 +55,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests() // Quitar lo de h2 console de la siguiente linea por seguridad!!!
 				.antMatchers(HttpMethod.POST, "/api/**").permitAll()
+				.antMatchers( "/h2-console/**").permitAll() // Comentar esto al desplegar
 				.anyRequest().authenticated()
 				.and()
 				.addFilter(new JWTAuthenticationFilter(authenticationManager()))
@@ -66,7 +67,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 // ataques de tipo csrf y habilitar los framesets si su contenido
                 // se sirve desde esta misma página.
 
-                http.csrf().ignoringAntMatchers("/h2-console/**"); //Descomentar esto por seguridad
+                http.csrf().ignoringAntMatchers("/h2-console/**"); 
                 http.headers().frameOptions().sameOrigin();
 				http.cors().configurationSource(corsConfigurationSource()).and().csrf().disable();
 

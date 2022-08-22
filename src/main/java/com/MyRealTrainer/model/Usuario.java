@@ -33,7 +33,7 @@ public class Usuario {
     private String apellidos;
 
     @NotBlank
-    @Size(max = 50)
+    @Size(max = 100)
     private String localidad;
 
     @NonNull

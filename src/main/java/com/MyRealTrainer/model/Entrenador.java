@@ -10,7 +10,7 @@ import org.springframework.lang.NonNull;
 
 @Entity
 @Table(name = "entrenadores")
-public class Entrenador extends Usuario {
+public class Entrenador {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,6 +34,10 @@ public class Entrenador extends Usuario {
 
     @OneToMany(mappedBy = "entrenador")
     private List<LugarEntrenamiento> lugares;
+    
+    @OneToOne(optional = false)
+    @JoinColumn(name="usuario_id")
+    private Usuario usuario;
 
     @OneToMany(mappedBy = "entrenador")
     private List<Servicio> servicios;

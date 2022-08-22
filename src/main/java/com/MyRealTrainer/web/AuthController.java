@@ -7,10 +7,8 @@ import com.MyRealTrainer.model.Usuario;
 import com.MyRealTrainer.model.Rol;
 import com.MyRealTrainer.model.TipoRol;
 import com.MyRealTrainer.payload.LoginDto;
-import com.MyRealTrainer.payload.SignUpDto;
 import com.MyRealTrainer.repository.UsuarioRepository;
 import com.MyRealTrainer.repository.RolRepository;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,11 +25,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-
-
-
-
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -49,64 +43,43 @@ public class AuthController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @PostMapping("/signin")
-    public ResponseEntity<?> authenticateUser(@RequestBody LoginDto loginDto){
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                loginDto.getnameOrEmail(), loginDto.getPassword()));
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        
-        Map<String,Object> response = new HashMap<>();
-        List<String> errores = new ArrayList<>();
-        Usuario userlogged = usuarioRepository.findByNombreOrEmail(loginDto.getnameOrEmail(), loginDto.getnameOrEmail()).get();
-
-        if(userlogged == null){
-            errores.add("Este usuario no está registrado. Primero debes registrarte");
-            response.put("errores", errores);
-            return ResponseEntity.badRequest().body(response);
-        }
-        
-        usuarioRepository.save(userlogged);
-        return new ResponseEntity<>("User signed-in successfully!.", HttpStatus.OK);
-    }
-
+   
 
     @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@RequestBody SignUpDto signUpDto){
+    public ResponseEntity<?> registerUser(@RequestBody Usuario usuario){
         Map<String,Object> response = new HashMap<>();
         List<String> errores = new ArrayList<>();
 
-        // add check for email exists in DB
-        if(usuarioRepository.existsByEmail(signUpDto.getEmail())){
+        // checks if email exists in database
+        if(usuarioRepository.existsByEmail(usuario.getEmail())){
             errores.add("Este email ya está registrado");
             response.put("errores", errores);
             return ResponseEntity.badRequest().body(response);
         }
 
-        if(!signUpDto.getPassword().equals(signUpDto.getConfirm())){
-            errores.add("Las contraseñas no coinciden");
-            response.put("errores", errores);
-            return ResponseEntity.badRequest().body(response);
-        }
-
-     
-        
-
         // create user object
         Usuario user = new Usuario();
-        user.setNombre(signUpDto.getName());
-        user.setEmail(signUpDto.getEmail());
-        user.setPassword(passwordEncoder.encode(signUpDto.getPassword()));
-        user.setApellidos(signUpDto.getApellidos());
-        
+        user.setNombre(usuario.getNombre());
+        user.setEmail(usuario.getEmail());
+        user.setPassword(passwordEncoder.encode(usuario.getPassword()));
+        user.setApellidos(usuario.getApellidos());
+        user.setFechaNacimiento(usuario.getFechaNacimiento());
+        user.setLocalidad(usuario.getLocalidad());
 
-        
+        // URL Foto perfil
 
-        Rol roles = rolRepository.findByTipoRol(TipoRol.CLIENTE).get();
-        user.setRoles(Collections.singleton(roles));
+        Optional<Rol> roles = rolRepository.findByTipoRol(TipoRol.CLIENTE);
+        if(roles.isPresent()){
+            user.setRoles(Collections.singleton(roles.get()));
+        }else{
+            Rol rolCliente= new Rol();
+            rolCliente.setTipoRol(TipoRol.CLIENTE);
+            rolRepository.save(rolCliente);
+            user.setRoles(Collections.singleton(rolCliente));
+
+        }
         
         usuarioRepository.save(user);
-
         return new ResponseEntity<>("Usuario registrado correctamente", HttpStatus.OK);
 
     }    
