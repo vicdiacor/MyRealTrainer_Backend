@@ -52,7 +52,7 @@ public class Usuario {
     @JoinTable(name = "usuario_roles", 
                joinColumns = @JoinColumn(name = "usuario_id", referencedColumnName = "id"),
                inverseJoinColumns = @JoinColumn(name = "rol_id", referencedColumnName = "id"))
-    private Set<Rol> roles = new HashSet<>();
+    private Set<Role> roles = new HashSet<>();
 
     //Métodos
 
@@ -99,11 +99,11 @@ public class Usuario {
         this.apellidos = apellidos;
     }
 
-    public Set<Rol> getRoles() {
+    public Set<Role> getRoles() {
         return roles;
     }
 
-    public void setRoles(Set<Rol> roles) {
+    public void setRoles(Set<Role> roles) {
         this.roles = roles;
     }
 

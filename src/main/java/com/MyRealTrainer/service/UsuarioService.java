@@ -3,11 +3,13 @@ package com.MyRealTrainer.service;
 import com.MyRealTrainer.repository.UsuarioRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.MyRealTrainer.model.Usuario;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UsuarioService {
@@ -24,25 +26,27 @@ public class UsuarioService {
         return repository.findById(id).orElse(null);
     }
 
-    public Usuario findByEmail(String email){ 
-        return repository.findByEmail(email).orElse(null);
+    public Optional<Usuario> findByEmail(String email){ 
+        return repository.findByEmail(email);
     }
 
     public Usuario findByNameOrEmail(String name, String email){ 
         return repository.findByNombreOrEmail(name,email).orElse(null);
     }
 
+    @Transactional
     public Boolean existsByEmail(String email){ 
         return repository.existsByEmail(email);
     }
 
  
 
-
+    @Transactional
     public Usuario save(Usuario Usuario){ 
         return repository.save(Usuario);
     }
 
+    @Transactional
     public void deleteById(Long id){ 
         repository.deleteById(id);
     }

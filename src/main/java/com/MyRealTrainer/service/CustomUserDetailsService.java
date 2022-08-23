@@ -1,7 +1,7 @@
 package com.MyRealTrainer.service;
 
 import com.MyRealTrainer.model.Usuario;
-import com.MyRealTrainer.model.Rol;
+import com.MyRealTrainer.model.Role;
 import com.MyRealTrainer.model.TipoRol;
 import com.MyRealTrainer.repository.UsuarioRepository;
 import java.util.*;
@@ -34,8 +34,8 @@ public class CustomUserDetailsService implements UserDetailsService  {
          user.getPassword(), mapRolesToAuthorities(user.getRoles()));
 }
 
-    private Collection< ? extends GrantedAuthority> mapRolesToAuthorities(Set<Rol> roles){
-    return roles.stream().map(role -> new SimpleGrantedAuthority(role.getTipoRol())).collect(Collectors.toList());
+    private Collection< ? extends GrantedAuthority> mapRolesToAuthorities(Set<Role> roles){
+    return roles.stream().map(role -> new SimpleGrantedAuthority(role.getName())).collect(Collectors.toList());
     }
     
 }

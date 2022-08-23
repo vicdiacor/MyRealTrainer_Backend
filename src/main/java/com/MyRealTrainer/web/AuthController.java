@@ -2,20 +2,16 @@ package com.MyRealTrainer.web;
 
 
 import java.util.Collections;
+import java.util.Date;
 
 import com.MyRealTrainer.model.Usuario;
-import com.MyRealTrainer.model.Rol;
-import com.MyRealTrainer.model.TipoRol;
-import com.MyRealTrainer.payload.LoginDto;
-import com.MyRealTrainer.repository.UsuarioRepository;
-import com.MyRealTrainer.repository.RolRepository;
+import com.MyRealTrainer.model.Role;
+import com.MyRealTrainer.service.RoleService;
+import com.MyRealTrainer.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -35,10 +31,10 @@ public class AuthController {
     private AuthenticationManager authenticationManager;
 
     @Autowired
-    private UsuarioRepository usuarioRepository;
+    private UsuarioService usuarioService;
 
     @Autowired
-    private RolRepository rolRepository;
+    private RoleService roleService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -51,7 +47,7 @@ public class AuthController {
         List<String> errores = new ArrayList<>();
 
         // checks if email exists in database
-        if(usuarioRepository.existsByEmail(usuario.getEmail())){
+        if(usuarioService.existsByEmail(usuario.getEmail())){
             errores.add("Este email ya está registrado");
             response.put("errores", errores);
             return ResponseEntity.badRequest().body(response);
@@ -63,23 +59,29 @@ public class AuthController {
         user.setEmail(usuario.getEmail());
         user.setPassword(passwordEncoder.encode(usuario.getPassword()));
         user.setApellidos(usuario.getApellidos());
-        user.setFechaNacimiento(usuario.getFechaNacimiento());
+        Date fechaNacimiento = usuario.getFechaNacimiento();
+        fechaNacimiento.setHours(0);
+        fechaNacimiento.setMinutes(0);
+        fechaNacimiento.setSeconds(0);
+        user.setFechaNacimiento(fechaNacimiento);
         user.setLocalidad(usuario.getLocalidad());
+       
+        // add URL Foto perfil
 
-        // URL Foto perfil
+        // add Tipo de rol
 
-        Optional<Rol> roles = rolRepository.findByTipoRol(TipoRol.CLIENTE);
+        Optional<Role> roles = roleService.findByName("ROLE_CLIENTE");
         if(roles.isPresent()){
             user.setRoles(Collections.singleton(roles.get()));
         }else{
-            Rol rolCliente= new Rol();
-            rolCliente.setTipoRol(TipoRol.CLIENTE);
-            rolRepository.save(rolCliente);
+            Role rolCliente= new Role();
+            rolCliente.setName("ROLE_CLIENTE");
+            roleService.save(rolCliente);
             user.setRoles(Collections.singleton(rolCliente));
 
         }
         
-        usuarioRepository.save(user);
+        usuarioService.save(user);
         return new ResponseEntity<>("Usuario registrado correctamente", HttpStatus.OK);
 
     }    
