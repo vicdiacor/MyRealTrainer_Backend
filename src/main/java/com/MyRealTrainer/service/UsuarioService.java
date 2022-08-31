@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import com.MyRealTrainer.model.Usuario;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,8 +23,8 @@ public class UsuarioService {
         return repository.findAll();
     }
 
-	public Usuario findById(Long id){ 
-        return repository.findById(id).orElse(null);
+	public Optional<Usuario> findById(Long id){ 
+        return repository.findById(id);
     }
 
     public Optional<Usuario> findByEmail(String email){ 
@@ -37,6 +38,13 @@ public class UsuarioService {
     @Transactional
     public Boolean existsByEmail(String email){ 
         return repository.existsByEmail(email);
+    }
+
+    public Usuario updateUser(Usuario updatedUser, Usuario currentUser){
+        BeanUtils.copyProperties(updatedUser, currentUser, "id");
+        this.save(currentUser);
+        return currentUser;
+        
     }
 
  

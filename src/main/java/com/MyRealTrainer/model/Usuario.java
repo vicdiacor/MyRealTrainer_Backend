@@ -3,8 +3,25 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import javax.persistence.*;
-import javax.validation.constraints.*;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Past;
+import javax.validation.constraints.Size;
+
 import org.springframework.lang.NonNull;
 
 @Entity
@@ -39,6 +56,9 @@ public class Usuario {
     @NonNull
     @Past
     private Date fechaNacimiento;
+
+    @OneToOne(fetch = FetchType.LAZY,optional = true,mappedBy = "usuario")
+    private Entrenador entrenador;
 
 
     private String urlFotoPerfil;
@@ -90,6 +110,19 @@ public class Usuario {
     public void setPassword(String password) {
         this.password = password;
     }
+    
+    public Entrenador getEntrenador() {
+        
+        if(this.entrenador!=null){
+            this.entrenador.setUsuario(null);
+        }
+        return this.entrenador;
+    }
+
+    public void setEntrenador(Entrenador entrenador) {
+        this.entrenador = entrenador;
+    }
+
 
     public String getApellidos() {
         return apellidos;
@@ -151,16 +184,7 @@ public class Usuario {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((apellidos == null) ? 0 : apellidos.hashCode());
-        result = prime * result + ((contratos == null) ? 0 : contratos.hashCode());
-        result = prime * result + ((email == null) ? 0 : email.hashCode());
-        result = prime * result + ((fechaNacimiento == null) ? 0 : fechaNacimiento.hashCode());
         result = prime * result + ((id == null) ? 0 : id.hashCode());
-        result = prime * result + ((localidad == null) ? 0 : localidad.hashCode());
-        result = prime * result + ((nombre == null) ? 0 : nombre.hashCode());
-        result = prime * result + ((password == null) ? 0 : password.hashCode());
-        result = prime * result + ((roles == null) ? 0 : roles.hashCode());
-        result = prime * result + ((urlFotoPerfil == null) ? 0 : urlFotoPerfil.hashCode());
         return result;
     }
 
@@ -173,63 +197,13 @@ public class Usuario {
         if (getClass() != obj.getClass())
             return false;
         Usuario other = (Usuario) obj;
-        if (apellidos == null) {
-            if (other.apellidos != null)
-                return false;
-        } else if (!apellidos.equals(other.apellidos))
-            return false;
-        if (contratos == null) {
-            if (other.contratos != null)
-                return false;
-        } else if (!contratos.equals(other.contratos))
-            return false;
-        if (email == null) {
-            if (other.email != null)
-                return false;
-        } else if (!email.equals(other.email))
-            return false;
-        if (fechaNacimiento == null) {
-            if (other.fechaNacimiento != null)
-                return false;
-        } else if (!fechaNacimiento.equals(other.fechaNacimiento))
-            return false;
         if (id == null) {
             if (other.id != null)
                 return false;
         } else if (!id.equals(other.id))
             return false;
-        if (localidad == null) {
-            if (other.localidad != null)
-                return false;
-        } else if (!localidad.equals(other.localidad))
-            return false;
-        if (nombre == null) {
-            if (other.nombre != null)
-                return false;
-        } else if (!nombre.equals(other.nombre))
-            return false;
-        if (password == null) {
-            if (other.password != null)
-                return false;
-        } else if (!password.equals(other.password))
-            return false;
-        if (roles == null) {
-            if (other.roles != null)
-                return false;
-        } else if (!roles.equals(other.roles))
-            return false;
-        if (urlFotoPerfil == null) {
-            if (other.urlFotoPerfil != null)
-                return false;
-        } else if (!urlFotoPerfil.equals(other.urlFotoPerfil))
-            return false;
         return true;
     }
 
-    
-
-
-   
-    
 
 }

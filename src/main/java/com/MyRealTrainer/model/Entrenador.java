@@ -2,8 +2,10 @@ package com.MyRealTrainer.model;
 
 import java.util.List;
 
+import javax.annotation.Nonnull;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import org.springframework.lang.NonNull;
@@ -16,7 +18,7 @@ public class Entrenador {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @NonNull
+    @NotNull
     private boolean esPublico;
 
     @NotBlank
@@ -26,7 +28,7 @@ public class Entrenador {
     @Size(max = 500)
     private String descripcionSobreMi;
 
-    @NotBlank
+   
     @Size(max = 500)
     private String descripcionExperiencia;
 
@@ -35,7 +37,7 @@ public class Entrenador {
     @OneToMany(mappedBy = "entrenador")
     private List<LugarEntrenamiento> lugares;
     
-    @OneToOne(optional = false)
+    @OneToOne(fetch = FetchType.LAZY,optional = false)
     @JoinColumn(name="usuario_id")
     private Usuario usuario;
 
@@ -103,17 +105,31 @@ public class Entrenador {
         this.servicios = servicios;
     }
 
+    public Usuario getUsuario() {
+        if(this.usuario!=null){
+            this.usuario.setEntrenador(null);
+        }
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
+
+    public List<Contrato> getContratos() {
+        return contratos;
+    }
+
+    public void setContratos(List<Contrato> contratos) {
+        this.contratos = contratos;
+    }
+    
+
     @Override
     public int hashCode() {
         final int prime = 31;
-        int result = super.hashCode();
-        result = prime * result + ((descripcionExperiencia == null) ? 0 : descripcionExperiencia.hashCode());
-        result = prime * result + ((descripcionSobreMi == null) ? 0 : descripcionSobreMi.hashCode());
-        result = prime * result + (esPublico ? 1231 : 1237);
-        result = prime * result + ((formacion == null) ? 0 : formacion.hashCode());
+        int result = 1;
         result = prime * result + ((id == null) ? 0 : id.hashCode());
-        result = prime * result + ((lugares == null) ? 0 : lugares.hashCode());
-        result = prime * result + ((servicios == null) ? 0 : servicios.hashCode());
         return result;
     }
 
@@ -121,47 +137,28 @@ public class Entrenador {
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
-        if (!super.equals(obj))
+        if (obj == null)
             return false;
         if (getClass() != obj.getClass())
             return false;
         Entrenador other = (Entrenador) obj;
-        if (descripcionExperiencia == null) {
-            if (other.descripcionExperiencia != null)
-                return false;
-        } else if (!descripcionExperiencia.equals(other.descripcionExperiencia))
-            return false;
-        if (descripcionSobreMi == null) {
-            if (other.descripcionSobreMi != null)
-                return false;
-        } else if (!descripcionSobreMi.equals(other.descripcionSobreMi))
-            return false;
-        if (esPublico != other.esPublico)
-            return false;
-        if (formacion == null) {
-            if (other.formacion != null)
-                return false;
-        } else if (!formacion.equals(other.formacion))
-            return false;
         if (id == null) {
             if (other.id != null)
                 return false;
         } else if (!id.equals(other.id))
             return false;
-        if (lugares == null) {
-            if (other.lugares != null)
-                return false;
-        } else if (!lugares.equals(other.lugares))
-            return false;
-        if (servicios == null) {
-            if (other.servicios != null)
-                return false;
-        } else if (!servicios.equals(other.servicios))
-            return false;
         return true;
     }
 
     public Entrenador() {
+    }
+
+    public interface CreateValidation{
+        
+    }
+
+    public interface AdvancedValidation{
+        
     }
 
 }

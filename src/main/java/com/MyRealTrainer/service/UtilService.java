@@ -1,8 +1,11 @@
 package com.MyRealTrainer.service;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 
 @Service
 public class UtilService {
@@ -21,5 +24,12 @@ public class UtilService {
 		      return calendar.getTime();
 	   }
 	
+	public List<String> getErrorMessages(BindingResult binding, List<String> errorsList){
+		binding.getAllErrors().forEach((error)-> {
+            
+            errorsList.add(((FieldError) error).getField()+ " : " + error.getDefaultMessage());
+        });
+		return errorsList;
+	}
     
 }
