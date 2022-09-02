@@ -34,15 +34,17 @@ public class Entrenador {
 
     // Relaciones
 
-    @OneToMany(mappedBy = "entrenador")
-    private List<LugarEntrenamiento> lugares;
     
-    @OneToOne(fetch = FetchType.LAZY,optional = false)
+    @OneToOne(optional = false)
     @JoinColumn(name="usuario_id")
     private Usuario usuario;
 
     @OneToMany(mappedBy = "entrenador")
     private List<Servicio> servicios;
+
+    
+    @OneToMany(mappedBy = "entrenador")
+    private List<LugarEntrenamiento> lugares;
 
     @OneToMany(mappedBy = "entrenador")
     private List<Contrato> contratos;
@@ -87,14 +89,6 @@ public class Entrenador {
 
     public void setDescripcionExperiencia(String descripcionExperiencia) {
         this.descripcionExperiencia = descripcionExperiencia;
-    }
-
-    public List<LugarEntrenamiento> getLugares() {
-        return lugares;
-    }
-
-    public void setLugares(List<LugarEntrenamiento> lugares) {
-        this.lugares = lugares;
     }
 
     public List<Servicio> getServicios() {
@@ -159,6 +153,14 @@ public class Entrenador {
 
     public interface AdvancedValidation{
         
+    }
+
+    public List<LugarEntrenamiento> getLugares() {
+        return lugares;
+    }
+
+    public void setLugares(List<LugarEntrenamiento> lugares) {
+        this.lugares = lugares;
     }
 
 }
