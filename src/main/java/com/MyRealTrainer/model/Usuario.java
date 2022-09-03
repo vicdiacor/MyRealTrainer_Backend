@@ -24,6 +24,8 @@ import javax.validation.constraints.Size;
 
 import org.springframework.lang.NonNull;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "usuarios")
 public class Usuario {
@@ -112,10 +114,7 @@ public class Usuario {
     }
     
     public Entrenador getEntrenador() {
-        
-        if(this.entrenador!=null){
-            this.entrenador.setUsuario(null);
-        }
+      
         return this.entrenador;
     }
 

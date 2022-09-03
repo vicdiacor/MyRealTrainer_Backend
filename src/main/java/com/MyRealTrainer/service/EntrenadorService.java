@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import com.MyRealTrainer.model.Entrenador;
+import com.MyRealTrainer.model.LugarEntrenamiento;
 import com.MyRealTrainer.model.Usuario;
 
 import org.apache.bcel.Repository;
@@ -26,6 +27,9 @@ public class EntrenadorService {
     
     @Autowired
     private UsuarioService usuarioService;
+
+    @Autowired
+    private LugarEntrenamientoService lugarService;
     
     
 
@@ -52,8 +56,11 @@ public class EntrenadorService {
             response.put("errores", errores);
         }else{
             entrenador.setUsuario(usuario);
-         
-            response.put("entrenador", this.save(entrenador));
+            Entrenador savedEntrenador= this.save(entrenador); // Entrenador with usuario.entrenador = null
+            //savedEntrenador.setUsuario(usuario); // Entrenador with usuario.entrenador != null
+            savedEntrenador=lugarService.assignDefaultLugares(savedEntrenador);
+            //savedEntrenador.getUsuario().setEntrenador(null);
+            response.put("entrenador", savedEntrenador);
         }
         return response;
     } 

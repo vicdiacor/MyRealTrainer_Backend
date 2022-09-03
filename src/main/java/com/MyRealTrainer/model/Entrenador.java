@@ -10,6 +10,8 @@ import javax.validation.constraints.Size;
 
 import org.springframework.lang.NonNull;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "entrenadores")
 public class Entrenador {
@@ -35,8 +37,9 @@ public class Entrenador {
     // Relaciones
 
     
-    @OneToOne(optional = false)
+    @OneToOne(fetch = FetchType.LAZY,optional = false)
     @JoinColumn(name="usuario_id")
+    @JsonIgnore
     private Usuario usuario;
 
     @OneToMany(mappedBy = "entrenador")
@@ -100,9 +103,7 @@ public class Entrenador {
     }
 
     public Usuario getUsuario() {
-        if(this.usuario!=null){
-            this.usuario.setEntrenador(null);
-        }
+      
         return usuario;
     }
 

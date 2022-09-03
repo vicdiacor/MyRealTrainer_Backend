@@ -6,6 +6,8 @@ import javax.validation.constraints.Size;
 
 import org.springframework.lang.NonNull;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "lugares_entrenamiento")
 public class LugarEntrenamiento {
@@ -25,6 +27,15 @@ public class LugarEntrenamiento {
     @Size(max=100)
     private String direccion;
 
+    @Size(max=100)
+    private String ciudad;
+
+    @Size(max=100)
+    private String provincia;
+    
+    @Size(max=100)
+    private String codigoPostal;
+
     @NonNull
     @Enumerated(EnumType.STRING)
     private TipoLugar tipoLugar;
@@ -32,13 +43,44 @@ public class LugarEntrenamiento {
 
    // Relationships
    
-    @ManyToOne(optional = true)
+    public String getCiudad() {
+        return ciudad;
+    }
+
+
+    public void setCiudad(String ciudad) {
+        this.ciudad = ciudad;
+    }
+
+
+    public String getProvincia() {
+        return provincia;
+    }
+
+
+    public void setProvincia(String provincia) {
+        this.provincia = provincia;
+    }
+
+
+    public String getCodigoPostal() {
+        return codigoPostal;
+    }
+
+
+    public void setCodigoPostal(String codigoPostal) {
+        this.codigoPostal = codigoPostal;
+    }
+
+    @ManyToOne(fetch = FetchType.LAZY,optional = true)
     @JoinColumn(name="entrenador_id")
+    @JsonIgnore
     private Entrenador entrenador;
 
   
     @ManyToOne(optional = true)
     @JoinColumn(name="contrato_id")
+    @JsonIgnore
     private Contrato contrato;
 
 
@@ -93,6 +135,9 @@ public class LugarEntrenamiento {
 
 
     public Entrenador getEntrenador() {
+        if(this.entrenador!=null){
+            this.entrenador.getUsuario().setEntrenador(null);
+        }
         return entrenador;
     }
 
@@ -143,6 +188,14 @@ public class LugarEntrenamiento {
 
     public LugarEntrenamiento() {
     }
+
+    public LugarEntrenamiento(String titulo,TipoLugar tipo,Entrenador entrenador) {
+        this.titulo=titulo;
+        this.tipoLugar=tipo;
+        this.entrenador=entrenador;
+
+    }
+
 
     
 

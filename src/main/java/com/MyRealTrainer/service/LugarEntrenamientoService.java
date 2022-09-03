@@ -4,6 +4,7 @@ import com.MyRealTrainer.repository.LugarEntrenamientoRepository;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,15 +27,37 @@ public class LugarEntrenamientoService {
 	@Autowired
     private LugarEntrenamientoRepository lugarRepository;
 
-    @Autowired
-    private EntrenadorService entrenadorService;
-
 
 	public Optional<LugarEntrenamiento> findById(Long id){ 
         return lugarRepository.findById(id);
     }
 
-    
+ 
+    public Entrenador assignDefaultLugares(Entrenador entrenador){
+        List<LugarEntrenamiento> lugaresList= new ArrayList<LugarEntrenamiento>();
+        List<String> lugaresTitle= Arrays.asList(new String[]{"Mi gimnasio","Aire libre","Tu domicilio","Telemático"});
+        for (String title : lugaresTitle) {
+            LugarEntrenamiento lugar= new LugarEntrenamiento();
+            switch(title){
+                case "Mi gimnasio": 
+                        lugar= new LugarEntrenamiento("Mi gimnasio", TipoLugar.MI_GIMNASIO, entrenador);
+                        break;
+                case "Aire libre":
+                        lugar= new LugarEntrenamiento("Aire libre", TipoLugar.AIRE_LIBRE, entrenador);
+                        break;
+                case "Tu domicilio":
+                        lugar= new LugarEntrenamiento("Tu domicilio", TipoLugar.TU_DOMICILIO, entrenador);
+                        break;
+                case "Telemático":
+                        lugar= new LugarEntrenamiento("Telemático", TipoLugar.TELEMATICO, entrenador);
+                        break;
+            }
+            lugar.setEntrenador(entrenador);
+            lugaresList.add(this.save(lugar));
+        }
+        entrenador.setLugares(lugaresList);
+        return entrenador;
+    }
 	
     public  Map<String,Object> createNewLugar(LugarEntrenamiento lugar, Usuario usuario){
         Map<String,Object> response = new HashMap<>();

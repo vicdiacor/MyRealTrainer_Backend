@@ -83,6 +83,28 @@ public class LugarEntrenamientoController {
     }
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_CLIENTE','ROLE_ADMIN')")
+    @GetMapping("/{email}")
+    public ResponseEntity findMyLugares(@PathVariable String email) {
+    Map<String,Object> response = new HashMap<>();
+    List<String> errores = new ArrayList<String>();
+    Optional<Usuario> usuario = usuarioService.findByEmail(email);
+    if(!usuario.isPresent()){
+        errores.add("Este usuario no existe");
+        response.put("errores", errores);
+	    return ResponseEntity.badRequest().body(response);
+
+    }else if(SecurityContextHolder.getContext().getAuthentication().getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN")) || usuario.get().getEmail().equals(SecurityContextHolder.getContext().getAuthentication().getPrincipal())){
+        List<LugarEntrenamiento> lugares= usuario.get().getEntrenador().getLugares();
+        return ResponseEntity.ok(lugares);
+        
+    }else{
+        errores.add("No tienes permiso para obtener los lugares de las sesiones de este usuario");
+        response.put("errores", errores);
+        return ResponseEntity.badRequest().body(response);
+    }
+    }
+
    
     
    

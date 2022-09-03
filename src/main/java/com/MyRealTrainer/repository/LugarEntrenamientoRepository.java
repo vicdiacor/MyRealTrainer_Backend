@@ -12,7 +12,7 @@ import java.util.Optional;
 
 public interface LugarEntrenamientoRepository extends JpaRepository<LugarEntrenamiento, Long> {
 
-
+    
 
 
     
