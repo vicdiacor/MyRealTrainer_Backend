@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.MyRealTrainer.model.Direccion;
 import com.MyRealTrainer.model.Entrenador;
 import com.MyRealTrainer.model.LugarEntrenamiento;
 import com.MyRealTrainer.model.TipoLugar;
@@ -26,6 +27,9 @@ public class LugarEntrenamientoService {
 
 	@Autowired
     private LugarEntrenamientoRepository lugarRepository;
+
+    @Autowired
+    private DireccionService direccionService;
 
 
 	public Optional<LugarEntrenamiento> findById(Long id){ 
@@ -62,11 +66,29 @@ public class LugarEntrenamientoService {
     public  Map<String,Object> createNewLugar(LugarEntrenamiento lugar, Usuario usuario){
         Map<String,Object> response = new HashMap<>();
         List<String> errores = new ArrayList<String>();
+       
         if (usuario.getEntrenador()!=null){
-            Entrenador entrenador= usuario.getEntrenador(); //Entrenador with user.entrenador=null
-            entrenador.setUsuario(usuario); //Entrenador with full user
+            Entrenador entrenador= usuario.getEntrenador();
             lugar.setEntrenador(entrenador);
-            response.put("lugares", this.save(lugar));
+            if(lugar.getDireccion()!=null && direccionService.direccionWithoutCalle(lugar.getDireccion())){
+                errores.add("No puedes crear una dirección con número o bloque sin incorporar una calle");
+                response.put("errores", errores);
+            }else if(lugar.getDireccion()!=null && !direccionService.isEmpty(lugar.getDireccion())){
+                Direccion direccion= lugar.getDireccion();
+
+                lugar.setDireccion(null);
+                LugarEntrenamiento savedLugar= this.save(lugar);
+
+                direccion.setLugar(savedLugar);
+                direccionService.save(direccion);
+
+                savedLugar.setDireccion(direccion);
+                response.put("lugar", savedLugar);
+
+            }else{
+                lugar.setDireccion(null);
+                response.put("lugar", this.save(lugar));
+            }
             
         }else{
             errores.add("No puedes crear lugares de entrenamiento si no tienes creado un perfil de entrenador");
@@ -74,8 +96,16 @@ public class LugarEntrenamientoService {
         }
         return response;
     }
-   
 
+    // Creates a map with the format: {id: LugarEntrenamiento, .... ,}
+    public Map<Long,LugarEntrenamiento> createMapLugares(List<LugarEntrenamiento> lugarList){
+        HashMap<Long,LugarEntrenamiento> res= new HashMap<Long,LugarEntrenamiento>();
+        for (LugarEntrenamiento lugarEntrenamiento : lugarList) {
+            res.put(lugarEntrenamiento.getId(), lugarEntrenamiento);
+        }
+        return res;
+    }
+   
 
     @Transactional
     public LugarEntrenamiento save(LugarEntrenamiento lugar){ 

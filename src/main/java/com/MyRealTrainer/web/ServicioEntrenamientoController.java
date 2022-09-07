@@ -27,18 +27,20 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.MyRealTrainer.model.Entrenador;
 import com.MyRealTrainer.model.LugarEntrenamiento;
+import com.MyRealTrainer.model.Servicio;
 import com.MyRealTrainer.model.Usuario;
 import com.MyRealTrainer.service.EntrenadorService;
 import com.MyRealTrainer.service.LugarEntrenamientoService;
+import com.MyRealTrainer.service.ServicioEntrenamientoService;
 import com.MyRealTrainer.service.UsuarioService;
 import com.MyRealTrainer.service.UtilService;
 
 @RestController
-@RequestMapping("/lugares")
-public class LugarEntrenamientoController {
+@RequestMapping("/servicios")
+public class ServicioEntrenamientoController {
     
     @Autowired
-    private LugarEntrenamientoService lugarService;
+    private ServicioEntrenamientoService servicioEntrenamientoService;
 
     @Autowired
     private UsuarioService usuarioService;
@@ -49,7 +51,7 @@ public class LugarEntrenamientoController {
     @SuppressWarnings("rawtypes")
     @PreAuthorize("hasAnyRole('ROLE_CLIENTE','ROLE_ADMIN')")
     @PostMapping("/{email}")
-    public ResponseEntity createLugar(@PathVariable String email,  @Valid @RequestBody LugarEntrenamiento newLugar, BindingResult binding) {
+    public ResponseEntity createServicio(@PathVariable String email,  @Valid @RequestBody Servicio newServicio, BindingResult binding) {
     Map<String,Object> response = new HashMap<>();
     List<String> errores = new ArrayList<String>();
     if(binding.hasErrors()){
@@ -64,7 +66,7 @@ public class LugarEntrenamientoController {
 	    return ResponseEntity.badRequest().body(response);
 
     }else if(SecurityContextHolder.getContext().getAuthentication().getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN")) || usuario.get().getEmail().equals(SecurityContextHolder.getContext().getAuthentication().getPrincipal())){
-        Map<String,Object> responseService= lugarService.createNewLugar(newLugar,usuario.get());
+        Map<String,Object> responseService= servicioEntrenamientoService.createNewServicio(newServicio, usuario.get());
         
         if (responseService.containsKey("errores")){
             errores.addAll((List<String>) responseService.get("errores"));
@@ -72,40 +74,18 @@ public class LugarEntrenamientoController {
             return ResponseEntity.badRequest().body(response);
 
         }else{
-            return ResponseEntity.ok(responseService.get("lugar"));
+            return ResponseEntity.ok(responseService.get("servicio"));
         }
 
         
     }else{
-        errores.add("No tienes permiso para asociar este lugar de entrenamiento a este usuario");
+        errores.add("No tienes permiso para crear un servicio para este usuario");
         response.put("errores", errores);
         return ResponseEntity.badRequest().body(response);
     }
     }
 
-    @PreAuthorize("hasAnyRole('ROLE_CLIENTE','ROLE_ADMIN')")
-    @GetMapping("/{email}")
-    public ResponseEntity findMyLugares(@PathVariable String email) {
-    Map<String,Object> response = new HashMap<>();
-    List<String> errores = new ArrayList<String>();
-    Optional<Usuario> usuario = usuarioService.findByEmail(email);
-    if(!usuario.isPresent()){
-        errores.add("Este usuario no existe");
-        response.put("errores", errores);
-	    return ResponseEntity.badRequest().body(response);
-
-    }else if(SecurityContextHolder.getContext().getAuthentication().getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN")) || usuario.get().getEmail().equals(SecurityContextHolder.getContext().getAuthentication().getPrincipal())){
-        Map<Long,LugarEntrenamiento> lugaresMap= lugarService.createMapLugares(usuario.get().getEntrenador().getLugares());
-        return ResponseEntity.ok(lugaresMap);
-        
-    }else{
-        errores.add("No tienes permiso para obtener los lugares de las sesiones de este usuario");
-        response.put("errores", errores);
-        return ResponseEntity.badRequest().body(response);
-    }
-    }
-
-    
+   
 
    
     

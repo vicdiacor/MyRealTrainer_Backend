@@ -18,60 +18,19 @@ public class LugarEntrenamiento {
     
 
     @NotBlank
-    @Size(max=50)
+    @Size(max=80)
     private String titulo;
 
     @Size(max=300)
     private String descripcion;
 
-    @Size(max=100)
-    private String direccion;
-
-    @Size(max=100)
-    private String ciudad;
-
-    @Size(max=100)
-    private String provincia;
-    
-    @Size(max=100)
-    private String codigoPostal;
-
     @NonNull
     @Enumerated(EnumType.STRING)
     private TipoLugar tipoLugar;
     
+    // Relationships
 
-   // Relationships
    
-    public String getCiudad() {
-        return ciudad;
-    }
-
-
-    public void setCiudad(String ciudad) {
-        this.ciudad = ciudad;
-    }
-
-
-    public String getProvincia() {
-        return provincia;
-    }
-
-
-    public void setProvincia(String provincia) {
-        this.provincia = provincia;
-    }
-
-
-    public String getCodigoPostal() {
-        return codigoPostal;
-    }
-
-
-    public void setCodigoPostal(String codigoPostal) {
-        this.codigoPostal = codigoPostal;
-    }
-
     @ManyToOne(fetch = FetchType.LAZY,optional = true)
     @JoinColumn(name="entrenador_id")
     @JsonIgnore
@@ -82,6 +41,21 @@ public class LugarEntrenamiento {
     @JoinColumn(name="contrato_id")
     @JsonIgnore
     private Contrato contrato;
+
+    
+    @OneToOne(optional = true,mappedBy = "lugar")
+    private Direccion direccion;
+
+    // Methods
+    
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        return result;
+    }
 
 
     public Long getId() {
@@ -114,16 +88,6 @@ public class LugarEntrenamiento {
     }
 
 
-    public String getDireccion() {
-        return direccion;
-    }
-
-
-    public void setDireccion(String direccion) {
-        this.direccion = direccion;
-    }
-
-
     public TipoLugar getTipoLugar() {
         return tipoLugar;
     }
@@ -135,9 +99,6 @@ public class LugarEntrenamiento {
 
 
     public Entrenador getEntrenador() {
-        if(this.entrenador!=null){
-            this.entrenador.getUsuario().setEntrenador(null);
-        }
         return entrenador;
     }
 
@@ -156,17 +117,15 @@ public class LugarEntrenamiento {
         this.contrato = contrato;
     }
 
-    
 
-
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((id == null) ? 0 : id.hashCode());
-        return result;
+    public Direccion getDireccion() {
+        return direccion;
     }
 
+
+    public void setDireccion(Direccion direccion) {
+        this.direccion = direccion;
+    }
 
     @Override
     public boolean equals(Object obj) {
@@ -185,19 +144,16 @@ public class LugarEntrenamiento {
         return true;
     }
 
-
     public LugarEntrenamiento() {
     }
 
-    public LugarEntrenamiento(String titulo,TipoLugar tipo,Entrenador entrenador) {
-        this.titulo=titulo;
-        this.tipoLugar=tipo;
-        this.entrenador=entrenador;
 
+    public LugarEntrenamiento(String titulo, TipoLugar tipoLugar, Entrenador entrenador) {
+        this.titulo = titulo;
+        this.tipoLugar = tipoLugar;
+        this.entrenador = entrenador;
     }
-
-
     
-
+    
     
 }

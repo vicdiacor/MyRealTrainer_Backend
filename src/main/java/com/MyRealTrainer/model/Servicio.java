@@ -1,8 +1,11 @@
 package com.MyRealTrainer.model;
 import java.util.List;
 import javax.persistence.*;
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "servicios")
@@ -24,9 +27,11 @@ public class Servicio {
 
     @ManyToOne(optional = true)
     @JoinColumn(name="entrenador_id")
+    @JsonIgnore
     private Entrenador entrenador;
 
     @OneToMany(mappedBy = "servicio")
+    @Valid
     private List<Tarifa> tarifas;
 
     // Métodos
@@ -77,11 +82,7 @@ public class Servicio {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((descripcion == null) ? 0 : descripcion.hashCode());
-        result = prime * result + ((entrenador == null) ? 0 : entrenador.hashCode());
         result = prime * result + ((id == null) ? 0 : id.hashCode());
-        result = prime * result + ((tarifas == null) ? 0 : tarifas.hashCode());
-        result = prime * result + ((titulo == null) ? 0 : titulo.hashCode());
         return result;
     }
 
@@ -94,33 +95,15 @@ public class Servicio {
         if (getClass() != obj.getClass())
             return false;
         Servicio other = (Servicio) obj;
-        if (descripcion == null) {
-            if (other.descripcion != null)
-                return false;
-        } else if (!descripcion.equals(other.descripcion))
-            return false;
-        if (entrenador == null) {
-            if (other.entrenador != null)
-                return false;
-        } else if (!entrenador.equals(other.entrenador))
-            return false;
         if (id == null) {
             if (other.id != null)
                 return false;
         } else if (!id.equals(other.id))
             return false;
-        if (tarifas == null) {
-            if (other.tarifas != null)
-                return false;
-        } else if (!tarifas.equals(other.tarifas))
-            return false;
-        if (titulo == null) {
-            if (other.titulo != null)
-                return false;
-        } else if (!titulo.equals(other.titulo))
-            return false;
         return true;
     }
+
+    
 
    
     

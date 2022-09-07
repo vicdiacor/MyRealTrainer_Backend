@@ -56,10 +56,8 @@ public class EntrenadorService {
             response.put("errores", errores);
         }else{
             entrenador.setUsuario(usuario);
-            Entrenador savedEntrenador= this.save(entrenador); // Entrenador with usuario.entrenador = null
-            //savedEntrenador.setUsuario(usuario); // Entrenador with usuario.entrenador != null
+            Entrenador savedEntrenador= this.save(entrenador);
             savedEntrenador=lugarService.assignDefaultLugares(savedEntrenador);
-            //savedEntrenador.getUsuario().setEntrenador(null);
             response.put("entrenador", savedEntrenador);
         }
         return response;

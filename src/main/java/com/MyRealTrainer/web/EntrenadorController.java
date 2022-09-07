@@ -50,6 +50,7 @@ public class EntrenadorController {
     public ResponseEntity createEntrenador(@PathVariable String email,  @Valid @RequestBody Entrenador newEntrenador, BindingResult binding) {
     Map<String,Object> response = new HashMap<>();
     List<String> errores = new ArrayList<String>();
+    Object borrar = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     if(binding.hasErrors()){
         errores= utilService.getErrorMessages(binding, errores);
         response.put("errores", errores);
