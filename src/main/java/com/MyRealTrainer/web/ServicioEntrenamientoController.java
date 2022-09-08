@@ -85,6 +85,39 @@ public class ServicioEntrenamientoController {
     }
     }
 
+    
+    @SuppressWarnings("rawtypes")
+    @PreAuthorize("hasAnyRole('ROLE_CLIENTE','ROLE_ADMIN')")
+    @GetMapping("/{email}")
+    public ResponseEntity findMyServicios(@PathVariable String email) {
+    Map<String,Object> response = new HashMap<>();
+    List<String> errores = new ArrayList<String>();
+    Optional<Usuario> usuario = usuarioService.findByEmail(email);
+    if(!usuario.isPresent()){
+        errores.add("Este usuario no existe");
+        response.put("errores", errores);
+	    return ResponseEntity.badRequest().body(response);
+
+    }else if(SecurityContextHolder.getContext().getAuthentication().getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN")) || usuario.get().getEmail().equals(SecurityContextHolder.getContext().getAuthentication().getPrincipal())){
+        Map<String,Object> responseService= servicioEntrenamientoService.findMyServicios(usuario.get());
+        if (responseService.containsKey("errores")){
+            errores.addAll((List<String>) responseService.get("errores"));
+            response.put("errores",errores);
+            return ResponseEntity.badRequest().body(response);
+
+        }else{
+            return ResponseEntity.ok(responseService.get("servicios"));
+        }
+
+        
+    }else{
+        errores.add("No tienes permiso para crear un servicio para este usuario");
+        response.put("errores", errores);
+        return ResponseEntity.badRequest().body(response);
+    }
+    }
+
+
    
 
    

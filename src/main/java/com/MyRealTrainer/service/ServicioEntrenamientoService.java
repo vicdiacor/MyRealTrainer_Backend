@@ -39,6 +39,19 @@ public class ServicioEntrenamientoService {
         return servicioRepository.findById(id);
     }
 
+    public Map<String,Object> findMyServicios(Usuario usuario){
+        Map<String,Object> response = new HashMap<>();
+        List<String> errores = new ArrayList<String>();
+        if (usuario.getEntrenador()!=null){
+            List<Servicio> myServicios= servicioRepository.findMyServicios(usuario.getEntrenador().getId());
+            response.put("servicios", myServicios);
+        }else{
+            errores.add("Los perfiles que no son de tipo entrenador no pueden tener servicios");
+            response.put("errores", errores);
+
+        }
+        return response;
+    }
 
     public  Map<String,Object> createNewServicio(Servicio servicio, Usuario usuario){
         Map<String,Object> response = new HashMap<>();
