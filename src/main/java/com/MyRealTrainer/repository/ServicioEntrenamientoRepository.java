@@ -14,8 +14,7 @@ import com.MyRealTrainer.model.Servicio;
 import com.MyRealTrainer.model.Usuario;
 
 public interface ServicioEntrenamientoRepository extends JpaRepository<Servicio, Long> {
-
-    // WHERE s.entrenador.id LIKE :entrenador_id
+    
     @Query(value = "SELECT  s.* FROM Servicios s WHERE s.entrenador_id=:entrenador_id", nativeQuery=true)
     public List<Servicio>  findMyServicios(@Param("entrenador_id") Long id) throws DataAccessException;
 
