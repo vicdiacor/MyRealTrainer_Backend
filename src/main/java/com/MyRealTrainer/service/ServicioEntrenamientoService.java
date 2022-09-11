@@ -53,15 +53,16 @@ public class ServicioEntrenamientoService {
         return response;
     }
 
-    public  Map<String,Object> createNewServicio(Servicio servicio, Usuario usuario){
+
+    public  Map<String,Object> constructAndSave(Servicio servicio, Usuario usuario){
+        boolean editMode= servicio.getId()!=null;
         Map<String,Object> response = new HashMap<>();
         List<String> errores = new ArrayList<String>();
-       
-        if (usuario.getEntrenador()!=null){
-            Entrenador entrenador= usuario.getEntrenador();
-            servicio.setEntrenador(entrenador);
+        if(!editMode){
+            servicio.setEntrenador(usuario.getEntrenador());
+        }
             if(servicio.getTarifas().size()<1){
-                errores.add("No puedes crear servicios de entrenamiento si no tienes creado un perfil de entrenador");
+                errores.add("Debes asignar al menos una tarifa");
                 response.put("errores", errores);
             }else{
                 
@@ -71,7 +72,7 @@ public class ServicioEntrenamientoService {
                 List<Tarifa> savedTarifas= new ArrayList<Tarifa>();
              for (int i=0;i<tarifaList.size();i++) {
                     
-                    Map<String,Object> responseTarifa= tarifaService.createNewTarifa(savedServicio, tarifaList.get(i));
+                    Map<String,Object> responseTarifa= tarifaService.constructAndSave(savedServicio, tarifaList.get(i));
                     if(responseTarifa.containsKey("errores")){
                         return responseTarifa;
                     }else{
@@ -84,10 +85,7 @@ public class ServicioEntrenamientoService {
             }
             
             
-        }else {
-            errores.add("No puedes crear servicios de entrenamiento si no tienes creado un perfil de entrenador");
-            response.put("errores", errores);
-        }
+        
         return response;
     }
 

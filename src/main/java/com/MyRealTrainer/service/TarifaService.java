@@ -39,10 +39,12 @@ public class TarifaService {
     }
 
 
+    
 
 
 
-    public  Map<String,Object> createNewTarifa(Servicio servicio, Tarifa tarifa){
+    public  Map<String,Object> constructAndSave(Servicio servicio, Tarifa tarifa){
+        
         Map<String,Object> response = new HashMap<>();
         List<String> errores = new ArrayList<String>();
             List<LugarEntrenamiento> lugares= new ArrayList<LugarEntrenamiento>();
@@ -57,6 +59,7 @@ public class TarifaService {
                 }
 
             }
+          
             tarifa.setLugares(lugares);
             tarifa.setServicio(servicio);
             Tarifa savedTarifa= this.save(tarifa);
