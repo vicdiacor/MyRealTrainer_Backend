@@ -6,9 +6,12 @@ import com.MyRealTrainer.repository.ServicioEntrenamientoRepository;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import com.MyRealTrainer.model.Direccion;
 import com.MyRealTrainer.model.Entrenador;
@@ -33,7 +36,21 @@ public class ServicioEntrenamientoService {
     @Autowired
     private TarifaService tarifaService;
 
-
+    public boolean editingMyOwnTarifas(Servicio oldService, Servicio editedService){
+        // Las que tienen ID dentro de edtedService estaban en oldService
+        boolean res= true;
+        Set<Long> oldTarifasIds= new HashSet<Long>();
+        for (Tarifa tarifa : oldService.getTarifas()) {
+            oldTarifasIds.add(tarifa.getId());
+        }
+        for (Tarifa tarifa : editedService.getTarifas()) {
+            if(tarifa.getId()!=null && !oldTarifasIds.contains(tarifa.getId())){
+                res=false;
+                break;
+            }
+        }
+        return res;
+    } 
 
 	public Optional<Servicio> findById(Long id){ 
         return servicioRepository.findById(id);
@@ -53,6 +70,31 @@ public class ServicioEntrenamientoService {
         return response;
     }
 
+      // After editing a Servicio, the followind method deletes the old tarifas that were linked to it 
+      // but they didnt come from the form this time
+
+      public  void  deleteMissingTarifas(Servicio editedService,Servicio oldService){
+      
+            Set<Long> oldTarifasIds= new HashSet<Long>();
+            Set<Long> editedTarifasIds= new HashSet<Long>();
+            
+
+            for (Tarifa tarifa : oldService.getTarifas()) {
+                oldTarifasIds.add(tarifa.getId());
+            }
+
+            for (Tarifa tarifa : editedService.getTarifas()) {
+                editedTarifasIds.add(tarifa.getId());
+            }
+            oldTarifasIds.removeAll(editedTarifasIds);
+            Iterator<Long> tarifaIdIterator = oldTarifasIds.iterator();
+            while(tarifaIdIterator.hasNext()) {
+                tarifaService.deleteById(tarifaIdIterator.next());
+             }
+        
+       
+    }
+
 
     public  Map<String,Object> constructAndSave(Servicio servicio, Usuario usuario){
         boolean editMode= servicio.getId()!=null;
@@ -65,13 +107,13 @@ public class ServicioEntrenamientoService {
                 errores.add("Debes asignar al menos una tarifa");
                 response.put("errores", errores);
             }else{
-                
+              
                 List<Tarifa> tarifaList= servicio.getTarifas();
                 servicio.setTarifas(null);
                 Servicio savedServicio= this.save(servicio);
                 List<Tarifa> savedTarifas= new ArrayList<Tarifa>();
-             for (int i=0;i<tarifaList.size();i++) {
-                    
+             for (int i=0;i<tarifaList.size();i++) { // Save tarifas
+                     
                     Map<String,Object> responseTarifa= tarifaService.constructAndSave(savedServicio, tarifaList.get(i));
                     if(responseTarifa.containsKey("errores")){
                         return responseTarifa;
@@ -79,6 +121,8 @@ public class ServicioEntrenamientoService {
                         savedTarifas.add( (Tarifa) responseTarifa.get("tarifa"));
                     }
                 }
+                // Delete the old tarifas that arent in the edited service
+
                 servicio.setTarifas(savedTarifas);
                 response.put("servicio", savedServicio);
 

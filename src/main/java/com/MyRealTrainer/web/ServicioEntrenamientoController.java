@@ -132,20 +132,25 @@ public class ServicioEntrenamientoController {
 	    return ResponseEntity.badRequest().body(response);
 
     }else if(SecurityContextHolder.getContext().getAuthentication().getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN")) || oldService.get().getEntrenador().getUsuario().getEmail().equals(SecurityContextHolder.getContext().getAuthentication().getPrincipal())){
-        BeanUtils.copyProperties(editedService, oldService.get(),"id","entrenador");
-        
-        Map<String,Object> responseService= servicioEntrenamientoService.constructAndSave(oldService.get(), oldService.get().getEntrenador().getUsuario());
-        
-        if (responseService.containsKey("errores")){
-            errores.addAll((List<String>) responseService.get("errores"));
-            response.put("errores",errores);
-            return ResponseEntity.badRequest().body(response);
-
+        boolean editingMyOwnTarifas= servicioEntrenamientoService.editingMyOwnTarifas(oldService.get(), editedService);
+        if(editingMyOwnTarifas){
+            servicioEntrenamientoService.deleteMissingTarifas(editedService,oldService.get());
+            BeanUtils.copyProperties(editedService, oldService.get(),"id","entrenador");
+            Map<String,Object> responseService= servicioEntrenamientoService.constructAndSave(oldService.get(), oldService.get().getEntrenador().getUsuario());
+            
+            if (responseService.containsKey("errores")){
+                errores.addAll((List<String>) responseService.get("errores"));
+                response.put("errores",errores);
+                return ResponseEntity.badRequest().body(response);
+    
+            }else{
+                return ResponseEntity.ok(responseService.get("servicio"));
+            }
         }else{
-            return ResponseEntity.ok(responseService.get("servicio"));
+            errores.add("Estás intentando modificar o asociar a tus servicios tarifas de otros usuarios");
+            response.put("errores", errores);
+            return ResponseEntity.badRequest().body(response);
         }
-
-
         
     }else{
         errores.add("No tienes permiso para editar un servicio para este usuario");
@@ -154,9 +159,5 @@ public class ServicioEntrenamientoController {
     }
   
 }
-   
-
-
-    
    
 }

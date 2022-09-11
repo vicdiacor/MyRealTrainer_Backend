@@ -38,16 +38,13 @@ public class TarifaService {
         return tarifaRepository.findById(id);
     }
 
-
-    
-
+  
 
 
     public  Map<String,Object> constructAndSave(Servicio servicio, Tarifa tarifa){
-        
         Map<String,Object> response = new HashMap<>();
         List<String> errores = new ArrayList<String>();
-            List<LugarEntrenamiento> lugares= new ArrayList<LugarEntrenamiento>();
+        List<LugarEntrenamiento> lugares= new ArrayList<LugarEntrenamiento>();
             for(LugarEntrenamiento lugar : tarifa.getLugares()){
                 Optional<LugarEntrenamiento> storedLugar= lugarService.findById(lugar.getId());
                 if(storedLugar.isPresent()){
@@ -59,7 +56,7 @@ public class TarifaService {
                 }
 
             }
-          
+            
             tarifa.setLugares(lugares);
             tarifa.setServicio(servicio);
             Tarifa savedTarifa= this.save(tarifa);
