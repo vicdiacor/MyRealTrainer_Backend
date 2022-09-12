@@ -21,7 +21,7 @@ public class Ejercicio {
     }
 
     @NotBlank
-    @Size(max=80)
+    @Size(max=100)
     private String titulo;
     
     @Size(max=500)
@@ -36,8 +36,7 @@ public class Ejercicio {
     @NotBlank
     private String consejos;
 
-    @Size(max=80)
-    @NotBlank
+   
     private String imagenURL;
 
     // Relationships
