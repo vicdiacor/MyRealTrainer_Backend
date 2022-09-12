@@ -25,6 +25,9 @@ public class Contrato {
     @Size(max=500)
     private String limitaciones;
 
+    
+    private String urlImagen;
+
     @NonNull
     @Min(0)
     @Digits(fraction=2,integer=5)
@@ -129,6 +132,14 @@ public class Contrato {
         this.estadoContrato = estadoContrato;
     }
 
+    public String getUrlImagen() {
+        return urlImagen;
+    }
+
+    public void setUrlImagen(String urlImagen) {
+        this.urlImagen = urlImagen;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -142,6 +153,7 @@ public class Contrato {
         result = prime * result + ((id == null) ? 0 : id.hashCode());
         result = prime * result + ((limitaciones == null) ? 0 : limitaciones.hashCode());
         result = prime * result + ((precioTotal == null) ? 0 : precioTotal.hashCode());
+        result = prime * result + ((urlImagen == null) ? 0 : urlImagen.hashCode());
         return result;
     }
 
@@ -196,9 +208,15 @@ public class Contrato {
                 return false;
         } else if (!precioTotal.equals(other.precioTotal))
             return false;
+        if (urlImagen == null) {
+            if (other.urlImagen != null)
+                return false;
+        } else if (!urlImagen.equals(other.urlImagen))
+            return false;
         return true;
     }
 
+   
    
 
     

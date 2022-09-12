@@ -30,7 +30,7 @@ public class Servicio {
     @JsonIgnore
     private Entrenador entrenador;
 
-    @OneToMany(mappedBy = "servicio")
+    @OneToMany(mappedBy = "servicio", cascade = CascadeType.REMOVE)
     @Valid
     private List<Tarifa> tarifas;
 

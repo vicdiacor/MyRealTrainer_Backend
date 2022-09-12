@@ -19,6 +19,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -159,5 +160,28 @@ public class ServicioEntrenamientoController {
     }
   
 }
+
+@SuppressWarnings("rawtypes")
+@PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_ENTRENADOR','ROLE_CLIENTE')")
+@DeleteMapping("/{id}")
+ public ResponseEntity deletePlaza(@PathVariable Long id) {
+    Map<String,Object> response = new HashMap<>();
+    List<String> errores = new ArrayList<String>();
+    Optional<Servicio> oldService = servicioEntrenamientoService.findById(id);
+    if(!oldService.isPresent()){
+        errores.add("Este servicio no existe");
+        response.put("errores", errores);
+	    return ResponseEntity.badRequest().body(response);
+
+    }else if(SecurityContextHolder.getContext().getAuthentication().getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN")) || oldService.get().getEntrenador().getUsuario().getEmail().equals(SecurityContextHolder.getContext().getAuthentication().getPrincipal())){
+        servicioEntrenamientoService.deleteById(oldService.get().getId());
+        return ResponseEntity.ok("Servicio eliminando con éxito");
+       
+    }else{
+        errores.add("No tienes permiso para eliminar un servicio de otro usuario");
+        response.put("errores", errores);
+        return ResponseEntity.badRequest().body(response);
+    }
+ }
    
 }

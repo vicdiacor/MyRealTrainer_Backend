@@ -45,7 +45,7 @@ public class Tarifa {
 
     // Relaciones
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "tarifa_lugares", 
                joinColumns = @JoinColumn(name = "tarifa_id", referencedColumnName = "id"),
                inverseJoinColumns = @JoinColumn(name = "lugar_id", referencedColumnName = "id"))

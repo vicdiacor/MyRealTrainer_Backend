@@ -144,5 +144,7 @@ public class ServicioEntrenamientoService {
     public void deleteById(Long id){ 
         servicioRepository.deleteById(id);
     }
+
+  
     
 }
