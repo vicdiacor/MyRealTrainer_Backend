@@ -15,7 +15,6 @@ public interface EntrenadorRepository extends JpaRepository<Entrenador, Long> {
 
 
 
-
     
 
 }

@@ -11,6 +11,7 @@ import java.util.Optional;
 
 import com.MyRealTrainer.model.Ejercicio;
 import com.MyRealTrainer.model.Entrenador;
+import com.MyRealTrainer.model.Usuario;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -45,6 +46,21 @@ public class EjercicioService {
     @Transactional
     public void deleteById(Long id){ 
         ejercicioRepository.deleteById(id);
+    }
+
+    public  Map<String,Object>  findByUsuario(Usuario usuario){
+        Map<String,Object> response = new HashMap<>();
+        List<String> errores = new ArrayList<String>();
+
+        if(usuario.getEntrenador()!=null){
+            List <Ejercicio> ejercicios= this.ejercicioRepository.findByEntrenadorId(usuario.getEntrenador().getId());
+            response.put("ejercicios", ejercicios);
+        }else{
+            errores.add("Este usuario no tiene creado un perfil de entrenador");
+            response.put("errores",errores);
+        }
+        
+        return response;
     }
 
   

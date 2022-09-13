@@ -89,5 +89,39 @@ public class EjercicioController {
         return ResponseEntity.badRequest().body(response);
     }
     }
+
+    @SuppressWarnings("rawtypes")
+    @PreAuthorize("hasAnyRole('ROLE_CLIENTE','ROLE_ADMIN')")
+    @GetMapping("/{email}")
+    public ResponseEntity getEjerciciosByEmail(@PathVariable String email) {
+    Map<String,Object> response = new HashMap<>();
+    List<String> errores = new ArrayList<String>();
+   
+    Optional<Usuario> usuario = usuarioService.findByEmail(email);
+    if(!usuario.isPresent()){
+        errores.add("Este usuario no existe");
+        response.put("errores", errores);
+	    return ResponseEntity.badRequest().body(response);
+
+    }else if(SecurityContextHolder.getContext().getAuthentication().getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN")) || usuario.get().getEmail().equals(SecurityContextHolder.getContext().getAuthentication().getPrincipal())){
+        Map<String,Object> responseService= ejercicioService.findByUsuario(usuario.get());
+        
+        if (responseService.containsKey("errores")){
+            errores.addAll((List<String>) responseService.get("errores"));
+            response.put("errores",errores);
+            return ResponseEntity.badRequest().body(response);
+
+        }else{
+            return ResponseEntity.ok(responseService.get("ejercicios"));
+        }
+        
+
+        
+    }else{
+        errores.add("No tienes permiso para acceder a los ejercicios de este usuario");
+        response.put("errores", errores);
+        return ResponseEntity.badRequest().body(response);
+    }
+    }
    
 }
