@@ -149,4 +149,27 @@ public class EjercicioController {
         return ResponseEntity.badRequest().body(response);
     }
 }
+
+@SuppressWarnings("rawtypes")
+@PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_ENTRENADOR','ROLE_CLIENTE')")
+@DeleteMapping("/{id}")
+ public ResponseEntity deleteEjercicio(@PathVariable Long id) {
+    Map<String,Object> response = new HashMap<>();
+    List<String> errores = new ArrayList<String>();
+    Optional<Ejercicio> oldEjercicio = ejercicioService.findById(id);
+    if(!oldEjercicio.isPresent()){
+        errores.add("Este ejercicio no existe");
+        response.put("errores", errores);
+	    return ResponseEntity.badRequest().body(response);
+
+    }else if(SecurityContextHolder.getContext().getAuthentication().getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN")) || oldEjercicio.get().getEntrenador().getUsuario().getEmail().equals(SecurityContextHolder.getContext().getAuthentication().getPrincipal())){
+        ejercicioService.deleteById(oldEjercicio.get().getId());
+        return ResponseEntity.ok(oldEjercicio.get());
+       
+    }else{
+        errores.add("No tienes permiso para eliminar un ejercicio de otro usuario");
+        response.put("errores", errores);
+        return ResponseEntity.badRequest().body(response);
+    }
+ }
 }

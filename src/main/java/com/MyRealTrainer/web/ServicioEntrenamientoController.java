@@ -175,7 +175,7 @@ public class ServicioEntrenamientoController {
 
     }else if(SecurityContextHolder.getContext().getAuthentication().getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN")) || oldService.get().getEntrenador().getUsuario().getEmail().equals(SecurityContextHolder.getContext().getAuthentication().getPrincipal())){
         servicioEntrenamientoService.deleteById(oldService.get().getId());
-        return ResponseEntity.ok("Servicio eliminando con éxito");
+        return ResponseEntity.ok(oldService.get());
        
     }else{
         errores.add("No tienes permiso para eliminar un servicio de otro usuario");

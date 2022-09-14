@@ -42,10 +42,10 @@ public class Ejercicio {
     // Relationships
 
     
-    @OneToMany(mappedBy = "ejercicio")
+    @OneToMany(mappedBy = "ejercicio",cascade = CascadeType.REMOVE)
     private List<Multimedia> recursosMultimedia;
 
-    @OneToMany(mappedBy = "ejercicio")
+    @OneToMany(mappedBy = "ejercicio",cascade = CascadeType.REMOVE)
     private List<Serie> series;
 
     
