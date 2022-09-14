@@ -123,5 +123,30 @@ public class EjercicioController {
         return ResponseEntity.badRequest().body(response);
     }
     }
-   
+
+    @SuppressWarnings("rawtypes")
+	@PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_ENTRENADOR','ROLE_CLIENTE')")
+    @PutMapping("/{id}")
+    public ResponseEntity updateEjercicio(@PathVariable Long id, @Valid @RequestBody Ejercicio editedEjercicio, BindingResult binding) {
+    Map<String,Object> response = new HashMap<>();
+    List<String> errores = new ArrayList<String>();
+    Optional<Ejercicio> oldEjercicio = ejercicioService.findById(id);
+    if(!oldEjercicio.isPresent()){
+        errores.add("Este ejercicio no existe");
+        response.put("errores", errores);
+	    return ResponseEntity.badRequest().body(response);
+
+    }else if(SecurityContextHolder.getContext().getAuthentication().getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN")) || oldEjercicio.get().getEntrenador().getUsuario().getEmail().equals(SecurityContextHolder.getContext().getAuthentication().getPrincipal())){
+       
+        BeanUtils.copyProperties(editedEjercicio, oldEjercicio.get(),"id","entrenador");
+        Ejercicio savedEjercicio= ejercicioService.save(oldEjercicio.get());
+        return ResponseEntity.ok(savedEjercicio);
+    
+        
+    }else{
+        errores.add("No tienes permiso para editar ejercicios de otros usuarios");
+        response.put("errores", errores);
+        return ResponseEntity.badRequest().body(response);
+    }
+}
 }
