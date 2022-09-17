@@ -126,6 +126,11 @@ public class ServicioEntrenamientoController {
     public ResponseEntity updateServicio(@PathVariable Long id, @Valid @RequestBody Servicio editedService, BindingResult binding) {
     Map<String,Object> response = new HashMap<>();
     List<String> errores = new ArrayList<String>();
+    if(binding.hasErrors()){
+        errores= utilService.getErrorMessages(binding, errores);
+        response.put("errores", errores);
+        return ResponseEntity.badRequest().body(response);
+    }
     Optional<Servicio> oldService = servicioEntrenamientoService.findById(id);
     if(!oldService.isPresent()){
         errores.add("Este servicio no existe");

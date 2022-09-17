@@ -19,9 +19,5 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     Optional<Usuario> findByNombre(String nombre);
     Boolean existsByNombre(String nombre);
     Boolean existsByEmail(String email);
- 
-
-    @Query(value = "SELECT  p FROM Usuarios p WHERE p.email LIKE :usuario_email", nativeQuery=true)
-    public Usuario Perfil(@Param("usuario_email") Long id) throws DataAccessException;
 
 }

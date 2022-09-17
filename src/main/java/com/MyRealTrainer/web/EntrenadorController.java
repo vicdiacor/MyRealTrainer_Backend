@@ -50,7 +50,6 @@ public class EntrenadorController {
     public ResponseEntity createEntrenador(@PathVariable String email,  @Valid @RequestBody Entrenador newEntrenador, BindingResult binding) {
     Map<String,Object> response = new HashMap<>();
     List<String> errores = new ArrayList<String>();
-    Object borrar = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     if(binding.hasErrors()){
         errores= utilService.getErrorMessages(binding, errores);
         response.put("errores", errores);
@@ -89,6 +88,11 @@ public class EntrenadorController {
 public ResponseEntity updateUsuario(@PathVariable Long id,  @Valid Usuario updatedUser, BindingResult binding) {
     Map<String,Object> response = new HashMap<>();
     List<String> errores = new ArrayList<String>();
+    if(binding.hasErrors()){
+        errores= utilService.getErrorMessages(binding, errores);
+        response.put("errores", errores);
+        return ResponseEntity.badRequest().body(response);
+    }
     Optional<Usuario> currentUser = usuarioService.findById(id);
     if(!currentUser.isPresent()){
         errores.add("Este usuario no existe");

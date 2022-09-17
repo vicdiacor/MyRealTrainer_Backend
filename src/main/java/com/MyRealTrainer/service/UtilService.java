@@ -3,9 +3,12 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import javax.validation.Validator;
+
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 @Service
 public class UtilService {
@@ -30,6 +33,12 @@ public class UtilService {
             errorsList.add(((FieldError) error).getField()+ " : " + error.getDefaultMessage());
         });
 		return errorsList;
+	}
+
+	public static Validator createValidator() {
+		LocalValidatorFactoryBean localValidatorFactoryBean = new LocalValidatorFactoryBean();
+		localValidatorFactoryBean.afterPropertiesSet();
+		return localValidatorFactoryBean;
 	}
     
 

@@ -8,11 +8,14 @@ import com.MyRealTrainer.model.Usuario;
 import com.MyRealTrainer.model.Role;
 import com.MyRealTrainer.service.RoleService;
 import com.MyRealTrainer.service.UsuarioService;
+import com.MyRealTrainer.service.UtilService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +25,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -39,12 +44,21 @@ public class AuthController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    
+    @Autowired
+    private UtilService utilService;
+
    
 
     @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@RequestBody Usuario usuario){
+    public ResponseEntity<?> registerUser(@Valid @RequestBody Usuario usuario, BindingResult binding){
         Map<String,Object> response = new HashMap<>();
         List<String> errores = new ArrayList<>();
+        if(binding.hasErrors()){
+            errores= utilService.getErrorMessages(binding, errores);
+            response.put("errores", errores);
+            return ResponseEntity.badRequest().body(response);
+        }
 
         // checks if email exists in database
         if(usuarioService.existsByEmail(usuario.getEmail())){

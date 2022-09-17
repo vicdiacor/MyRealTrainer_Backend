@@ -130,6 +130,11 @@ public class EjercicioController {
     public ResponseEntity updateEjercicio(@PathVariable Long id, @Valid @RequestBody Ejercicio editedEjercicio, BindingResult binding) {
     Map<String,Object> response = new HashMap<>();
     List<String> errores = new ArrayList<String>();
+    if(binding.hasErrors()){
+        errores= utilService.getErrorMessages(binding, errores);
+        response.put("errores", errores);
+        return ResponseEntity.badRequest().body(response);
+    }
     Optional<Ejercicio> oldEjercicio = ejercicioService.findById(id);
     if(!oldEjercicio.isPresent()){
         errores.add("Este ejercicio no existe");

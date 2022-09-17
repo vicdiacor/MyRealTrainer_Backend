@@ -19,12 +19,12 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
 
 import org.springframework.lang.NonNull;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "usuarios")
@@ -55,7 +55,7 @@ public class Usuario {
     @Size(max = 100)
     private String localidad;
 
-    @NonNull
+    @NotNull
     @Past
     private Date fechaNacimiento;
 
