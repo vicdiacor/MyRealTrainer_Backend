@@ -54,7 +54,7 @@ public class UsuarioController {
     }
     }
 
-    
+  /*  
 @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
 @PutMapping("/{id}/edit")
 @SuppressWarnings("rawtypes")
@@ -84,6 +84,6 @@ public ResponseEntity updateUsuario(@PathVariable Long id,  @Valid @RequestBody 
     }
     
 }
-
+*/
        
 }
