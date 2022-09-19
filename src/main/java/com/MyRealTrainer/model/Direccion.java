@@ -103,11 +103,20 @@ public class Direccion {
     }
 
 
+   
+
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
+        result = prime * result + ((calle == null) ? 0 : calle.hashCode());
+        result = prime * result + ((ciudad == null) ? 0 : ciudad.hashCode());
+        result = prime * result + ((codigoPostal == null) ? 0 : codigoPostal.hashCode());
         result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + ((lugar == null) ? 0 : lugar.hashCode());
+        result = prime * result + ((numero == null) ? 0 : numero.hashCode());
+        result = prime * result + ((piso == null) ? 0 : piso.hashCode());
+        result = prime * result + ((provincia == null) ? 0 : provincia.hashCode());
         return result;
     }
 
@@ -120,10 +129,45 @@ public class Direccion {
         if (getClass() != obj.getClass())
             return false;
         Direccion other = (Direccion) obj;
+        if (calle == null) {
+            if (other.calle != null)
+                return false;
+        } else if (!calle.equals(other.calle))
+            return false;
+        if (ciudad == null) {
+            if (other.ciudad != null)
+                return false;
+        } else if (!ciudad.equals(other.ciudad))
+            return false;
+        if (codigoPostal == null) {
+            if (other.codigoPostal != null)
+                return false;
+        } else if (!codigoPostal.equals(other.codigoPostal))
+            return false;
         if (id == null) {
             if (other.id != null)
                 return false;
         } else if (!id.equals(other.id))
+            return false;
+        if (lugar == null) {
+            if (other.lugar != null)
+                return false;
+        } else if (!lugar.equals(other.lugar))
+            return false;
+        if (numero == null) {
+            if (other.numero != null)
+                return false;
+        } else if (!numero.equals(other.numero))
+            return false;
+        if (piso == null) {
+            if (other.piso != null)
+                return false;
+        } else if (!piso.equals(other.piso))
+            return false;
+        if (provincia == null) {
+            if (other.provincia != null)
+                return false;
+        } else if (!provincia.equals(other.provincia))
             return false;
         return true;
     }

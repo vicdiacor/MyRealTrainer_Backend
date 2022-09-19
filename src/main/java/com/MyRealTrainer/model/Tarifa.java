@@ -119,11 +119,20 @@ public class Tarifa {
 
     
 
+   
+
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
+        result = prime * result + ((duracion == null) ? 0 : duracion.hashCode());
         result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + ((limitaciones == null) ? 0 : limitaciones.hashCode());
+        result = prime * result + ((lugares == null) ? 0 : lugares.hashCode());
+        result = prime * result + ((precio == null) ? 0 : precio.hashCode());
+        result = prime * result + ((servicio == null) ? 0 : servicio.hashCode());
+        result = prime * result + ((tipoDuracion == null) ? 0 : tipoDuracion.hashCode());
+        result = prime * result + ((titulo == null) ? 0 : titulo.hashCode());
         return result;
     }
 
@@ -136,10 +145,42 @@ public class Tarifa {
         if (getClass() != obj.getClass())
             return false;
         Tarifa other = (Tarifa) obj;
+        if (duracion == null) {
+            if (other.duracion != null)
+                return false;
+        } else if (!duracion.equals(other.duracion))
+            return false;
         if (id == null) {
             if (other.id != null)
                 return false;
         } else if (!id.equals(other.id))
+            return false;
+        if (limitaciones == null) {
+            if (other.limitaciones != null)
+                return false;
+        } else if (!limitaciones.equals(other.limitaciones))
+            return false;
+        if (lugares == null) {
+            if (other.lugares != null)
+                return false;
+        } else if (!lugares.equals(other.lugares))
+            return false;
+        if (precio == null) {
+            if (other.precio != null)
+                return false;
+        } else if (!precio.equals(other.precio))
+            return false;
+        if (servicio == null) {
+            if (other.servicio != null)
+                return false;
+        } else if (!servicio.equals(other.servicio))
+            return false;
+        if (tipoDuracion != other.tipoDuracion)
+            return false;
+        if (titulo == null) {
+            if (other.titulo != null)
+                return false;
+        } else if (!titulo.equals(other.titulo))
             return false;
         return true;
     }

@@ -48,17 +48,71 @@ public class LugarEntrenamiento {
     // Methods
     
 
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((id == null) ? 0 : id.hashCode());
-        return result;
-    }
+   
 
 
     public Long getId() {
         return id;
+    }
+
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((contrato == null) ? 0 : contrato.hashCode());
+        result = prime * result + ((descripcion == null) ? 0 : descripcion.hashCode());
+        result = prime * result + ((direccion == null) ? 0 : direccion.hashCode());
+        result = prime * result + ((entrenador == null) ? 0 : entrenador.hashCode());
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + ((tipoLugar == null) ? 0 : tipoLugar.hashCode());
+        result = prime * result + ((titulo == null) ? 0 : titulo.hashCode());
+        return result;
+    }
+
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        LugarEntrenamiento other = (LugarEntrenamiento) obj;
+        if (contrato == null) {
+            if (other.contrato != null)
+                return false;
+        } else if (!contrato.equals(other.contrato))
+            return false;
+        if (descripcion == null) {
+            if (other.descripcion != null)
+                return false;
+        } else if (!descripcion.equals(other.descripcion))
+            return false;
+        if (direccion == null) {
+            if (other.direccion != null)
+                return false;
+        } else if (!direccion.equals(other.direccion))
+            return false;
+        if (entrenador == null) {
+            if (other.entrenador != null)
+                return false;
+        } else if (!entrenador.equals(other.entrenador))
+            return false;
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
+            return false;
+        if (tipoLugar != other.tipoLugar)
+            return false;
+        if (titulo == null) {
+            if (other.titulo != null)
+                return false;
+        } else if (!titulo.equals(other.titulo))
+            return false;
+        return true;
     }
 
 
@@ -126,22 +180,7 @@ public class LugarEntrenamiento {
         this.direccion = direccion;
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        LugarEntrenamiento other = (LugarEntrenamiento) obj;
-        if (id == null) {
-            if (other.id != null)
-                return false;
-        } else if (!id.equals(other.id))
-            return false;
-        return true;
-    }
+   
 
     public LugarEntrenamiento() {
     }

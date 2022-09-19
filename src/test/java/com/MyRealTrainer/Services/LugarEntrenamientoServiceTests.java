@@ -301,10 +301,6 @@ public class LugarEntrenamientoServiceTests {
         assertEquals(response, entrenadorAfterService);
         Mockito.verify(lugarRepository,times(4)).save(any(LugarEntrenamiento.class));
 
-
-        
-
-
     }
 
 
