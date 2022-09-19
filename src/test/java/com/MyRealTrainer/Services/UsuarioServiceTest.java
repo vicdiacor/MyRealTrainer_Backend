@@ -1,12 +1,9 @@
 package com.MyRealTrainer.Services;
 
-import static org.mockito.Mockito.doReturn;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -50,66 +47,57 @@ public class UsuarioServiceTest {
     @Test
     @DisplayName("Test find all users")
     public void testFindAll(){
-        // ARRANGE
-        Mockito.when(usuarioRepository.findAll()).thenReturn(List.of(this.usuario1,this.usuario2));
         // Act
 		List<Usuario> allUsers = usuarioService.findAll();
         // Assert
-		Assertions.assertEquals(2, allUsers.size(),"The list size must be 2");
+        Mockito.verify(usuarioRepository, Mockito.times(1)).findAll();
+
     }
 
     @Test
     @DisplayName("Test find users by id")
     public void testFindById(){
-        // ARRANGE
-        Mockito.when(usuarioRepository.findById(this.usuario2.getId())).thenReturn(Optional.of(this.usuario2));
-
         // Act
 		Optional<Usuario> user2 = usuarioService.findById(this.usuario2.getId());
         // Assert
-		Assertions.assertEquals(user2.get(), this.usuario2,"The returned user isn´t the same");
+        Mockito.verify(usuarioRepository, Mockito.times(1)).findById(this.usuario2.getId());
+
     }
 
     @Test
     @DisplayName("Test find users by email")
     public void testFindByEmail(){
-         // ARRANGE
-         Mockito.when(usuarioRepository.findByEmail(this.usuario1.getEmail())).thenReturn(Optional.of(this.usuario1));
-
+        
         // Act
 		Optional<Usuario> user1 = usuarioService.findByEmail(this.usuario1.getEmail());
         // Assert
-		Assertions.assertEquals(user1.get(), this.usuario1,"The returned user isn´t the same");
+        Mockito.verify(usuarioRepository, Mockito.times(1)).findByEmail(this.usuario1.getEmail());
     }
 
     @Test
     @DisplayName("Test find users by nombre or email")
     public void testFindByNombreOrEmail(){
-         // ARRANGE
-         Mockito.when(usuarioRepository.findByNombreOrEmail(this.usuario1.getEmail(),this.usuario1.getEmail())).thenReturn(Optional.of(this.usuario1));
-
+      
         // Act
 		Usuario user1 = usuarioService.findByNameOrEmail(this.usuario1.getEmail(),this.usuario1.getEmail());
         // Assert
-        Assertions.assertNotNull(user1);
-		Assertions.assertEquals(user1, this.usuario1,"The returned user isn´t the same");
+     
+        Mockito.verify(usuarioRepository, Mockito.times(1)).findByNombreOrEmail(this.usuario1.getEmail(),this.usuario1.getEmail());
     }
 
     @Test
     @DisplayName("Test usuario exists by email")
     public void testExistsByEmail(){
-         // ARRANGE
-         Mockito.when(usuarioRepository.existsByEmail(this.usuario2.getEmail())).thenReturn(true);
 
         // Act
 		Boolean user2Exists = usuarioService.existsByEmail(this.usuario2.getEmail());
         // Assert
       
-		Assertions.assertEquals(user2Exists,true,"The user with id=2 doesn´t exist");
+        Mockito.verify(usuarioRepository, Mockito.times(1)).existsByEmail(this.usuario2.getEmail());
     }
     
     @Test
-    @DisplayName("Test update usuario")
+    @DisplayName("Test update usuario ignoring the 'id' field")
     public void testUpdate(){
          // Arrange
         Usuario editedUsuario= this.usuario2;
@@ -124,29 +112,36 @@ public class UsuarioServiceTest {
         savedUsuario.setApellidos("New apellidos");
         savedUsuario.setId(2l); // Original id
 
-        Mockito.when(usuarioRepository.save(savedUsuario)).thenReturn(savedUsuario);
+       
 
         // Act
 		Usuario updatedSavedUsuario = usuarioService.updateUser(editedUsuario,this.usuario2);
 
         // Assert
-		Assertions.assertEquals(updatedSavedUsuario,savedUsuario,"The user hasn´t the edited attributes");
+        Mockito.verify(usuarioRepository, Mockito.times(1)).save(savedUsuario);
     }
 
     @Test
     @DisplayName("Test save usuario")
     public void testSave(){
        
-
-        Mockito.when(usuarioRepository.save(this.usuario2)).thenReturn(this.usuario2);
-
         // Act
 		Usuario savedUsuario = usuarioService.save(usuario2);
 
         // Assert
-		Assertions.assertEquals(savedUsuario,this.usuario2,"The saved user hasn´t the expected attributes");
+        Mockito.verify(usuarioRepository, Mockito.times(1)).save(this.usuario2);
     }
 
+    @Test
+    @DisplayName("Test delete usuario by id")
+    public void testDeleteById(){
+      
+        // Act
+		usuarioService.deleteById(this.usuario1.getId());
+        // Assert
+     
+        Mockito.verify(usuarioRepository, Mockito.times(1)).deleteById(this.usuario1.getId());
+    }
     
 
 }

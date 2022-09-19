@@ -1,5 +1,7 @@
+INSERT INTO clients (id,nombre,email,password,apellidos,localidad,fecha_nacimiento,url_foto_perfil) VALUES (1, 'George', 'George@gmail.com',"password123","Franklin","Zahinos","04-02-2000");
 
-insert into usuarios (apellidos, email, fecha_nacimiento, localidad, nombre, password, url_foto_perfil) values ("apellidos", "mail@email.com","2000-04-02","Sevilla","Vicente","pass", "urlFotoPerfil.png")
+INSERT INTO roles (id,tipo_rol) VALUES (1,'ADMINISTRADOR')
 
-INSERT INTO roles (id,tipo_rol) VALUES (1,'CLIENTE')
+INSERT INTO roles (id,tipo_rol) VALUES (2,'CLIENTE')
 
+INSERT INTO roles (id,tipo_rol) VALUES (3,'ENTRENADOR')

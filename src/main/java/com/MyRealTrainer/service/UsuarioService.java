@@ -55,7 +55,7 @@ public class UsuarioService {
     }
 
     @Transactional
-    public void deleteById(Long id){ 
+    public void deleteById(Long id){
         repository.deleteById(id);
     }
     

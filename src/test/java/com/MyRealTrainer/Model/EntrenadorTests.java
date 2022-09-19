@@ -1,15 +1,10 @@
 package com.MyRealTrainer.Model;
 
-
-
 import com.MyRealTrainer.model.Entrenador;
-import com.MyRealTrainer.model.LugarEntrenamiento;
-import com.MyRealTrainer.model.TipoLugar;
 import com.MyRealTrainer.service.UtilService;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+
 
 import java.util.Set;
 
