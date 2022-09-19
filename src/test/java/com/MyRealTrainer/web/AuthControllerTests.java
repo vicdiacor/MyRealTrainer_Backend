@@ -1,7 +1,9 @@
 package com.MyRealTrainer.web;
 
+import com.MyRealTrainer.filter.JWTAuthenticationFilter;
 import com.MyRealTrainer.model.Role;
 import com.MyRealTrainer.model.Usuario;
+import com.MyRealTrainer.payload.LoginDto;
 import com.MyRealTrainer.service.CustomUserDetailsService;
 import com.MyRealTrainer.service.RoleService;
 import com.MyRealTrainer.service.UsuarioService;
@@ -17,27 +19,39 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 import static org.hamcrest.Matchers.*;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 
+
+@TestMethodOrder(OrderAnnotation.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @WebMvcTest(controllers = AuthController.class)
 public class AuthControllerTests {
@@ -57,7 +71,7 @@ public class AuthControllerTests {
    
 	@MockBean
     org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder passwordEncoder;
-    
+   
 
 	@MockBean
 	CustomUserDetailsService customUserDetailsService;
@@ -116,6 +130,7 @@ public class AuthControllerTests {
 	
 
 	@DisplayName("Register Success with Role_Cliente present in the database")
+	@Order(1)
     @Test
 	void testRegisterSuccess() throws Exception {
 		// Arrange
@@ -155,7 +170,7 @@ public class AuthControllerTests {
 
 	@DisplayName("Register failure due to binding errors: null user")
     @Test
-	void testRegisterNombreError() throws Exception {
+	void testRegisterEmptyUser() throws Exception {
 		// Arrange
 
 		when(usuarioService.existsByEmail(usuario1.getEmail())).thenReturn(false);
@@ -165,8 +180,10 @@ public class AuthControllerTests {
 		
 		// Test and Assert
 		mockMvc.perform(post("/api/auth/signup").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(badUsuario)))
-		.andExpect(status().isBadRequest()).andExpect(jsonPath("$.errores",hasSize(5)));
+		.andExpect(status().isBadRequest()).andExpect(jsonPath("$.errores",hasSize(6)));
 	}
+	
+
 	
 	
 

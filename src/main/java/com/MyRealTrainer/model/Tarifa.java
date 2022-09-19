@@ -9,6 +9,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import org.springframework.lang.NonNull;
@@ -27,16 +28,16 @@ public class Tarifa {
     @Size(max=80)
     private String titulo;
 
-    @NonNull
+    @NotNull
     @Min(0)
     @Digits(fraction=2,integer=5)
     private Double precio;
 
-    @NonNull
+    @NotNull
     @Enumerated(EnumType.STRING)
     private TipoDuracion tipoDuracion;
 
-    @NonNull
+    @NotNull
     @Min(0)
     private Double duracion;
 
@@ -153,6 +154,17 @@ public class Tarifa {
     public void setLugares(List<LugarEntrenamiento> lugares) {
         this.lugares = lugares;
     }
+
+    public void fillFields(){
+       this.duracion=1.0;
+       this.limitaciones="With this tarifa you can only train in person with me 2 times a week";
+       this.precio=35.99;
+       this.tipoDuracion=TipoDuracion.MES;
+       this.titulo="Standard Tarifa";
+
+
+    }
+
     
     
     

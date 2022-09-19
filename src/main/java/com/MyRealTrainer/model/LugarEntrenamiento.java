@@ -2,9 +2,8 @@ package com.MyRealTrainer.model;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-
-import org.springframework.lang.NonNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -24,7 +23,7 @@ public class LugarEntrenamiento {
     @Size(max=300)
     private String descripcion;
 
-    @NonNull
+    @NotNull
     @Enumerated(EnumType.STRING)
     private TipoLugar tipoLugar;
     
@@ -154,6 +153,11 @@ public class LugarEntrenamiento {
         this.entrenador = entrenador;
     }
     
-    
+    public void fillFields(){
+        this.titulo="My gym";
+        this.tipoLugar=TipoLugar.MI_GIMNASIO;
+        this.descripcion="Gym with capacity for 100 people and all kinds of equipment, both for bodybuilding and functional training";
+        
+    }
     
 }

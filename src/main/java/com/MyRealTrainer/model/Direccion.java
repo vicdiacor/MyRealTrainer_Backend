@@ -102,6 +102,7 @@ public class Direccion {
         this.lugar = lugar;
     }
 
+
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -128,6 +129,18 @@ public class Direccion {
     }
 
     public Direccion() {
+    }
+
+    public void fillFields(){
+     
+        this.ciudad="Sevilla";
+        this.calle="Calle Feria";
+        this.numero="2";
+        this.piso="3º A";
+        this.provincia="Sevilla";
+        this.codigoPostal=41013;
+
+
     }
 
     

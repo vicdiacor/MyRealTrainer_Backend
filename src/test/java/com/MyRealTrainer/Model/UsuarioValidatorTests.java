@@ -1,7 +1,5 @@
 package com.MyRealTrainer.Model;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import com.MyRealTrainer.model.Role;
 import com.MyRealTrainer.model.Usuario;
@@ -19,9 +17,14 @@ import javax.validation.Validator;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 
+
+@TestMethodOrder(OrderAnnotation.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class UsuarioValidatorTests {
 
@@ -48,6 +51,22 @@ public class UsuarioValidatorTests {
 		defaultUsuario.setRoles(Set.of(role_cliente));
 		
 
+	}
+
+	@Test
+	@Order(1)
+	@DisplayName("Validation success")
+	void testSuccess() {
+		
+	
+		
+		//ACT
+		Validator v = UtilService.createValidator();
+		Set<ConstraintViolation<Usuario>> c = v.validate(defaultUsuario);
+		
+		//ASSERT
+		assertThat(c.size()).isEqualTo(0);
+		
 	}
 
 	@Test
@@ -119,8 +138,13 @@ public class UsuarioValidatorTests {
 		//ASSERT
 		assertThat(c.size()).isEqualTo(2);
 		Iterator<ConstraintViolation<Usuario>> errorIterator = c.iterator();
-		assertThat(errorIterator.next().getMessage()).isEqualTo("debe ser una dirección de correo electrónico con formato correcto");
-		assertThat(errorIterator.next().getMessage()).isEqualTo("el tamaño debe estar entre 0 y 320");
+		boolean isInvalid= false;
+		while(errorIterator.hasNext()){
+			if(errorIterator.next().getMessage().equals("el tamaño debe estar entre 0 y 320")){
+				isInvalid=true;
+			}
+		}
+		assertThat(isInvalid).isTrue();
 	}
 
 	@Test

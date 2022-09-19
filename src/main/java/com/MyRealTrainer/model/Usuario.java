@@ -1,4 +1,5 @@
 package com.MyRealTrainer.model;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -24,6 +25,8 @@ import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
 
 import org.springframework.lang.NonNull;
+
+import com.MyRealTrainer.service.UtilService;
 
 
 @Entity
@@ -177,6 +180,23 @@ public class Usuario {
 
     public void setContratos(List<Contrato> contratos) {
         this.contratos = contratos;
+    }
+
+    public void fillFields(){
+        this.email="user@email.com";
+        this.nombre="defaultUser";
+        this.apellidos="defaultSurname";
+        Date date= new Date();
+        UtilService utilService= new UtilService();
+        date=utilService.addDate(date, Calendar.YEAR, -19);
+        this.fechaNacimiento= date;
+        this.localidad="Sevilla";
+        this.password="No-encoded-Password";
+        
+		Role role_cliente= new Role();
+		role_cliente.setName("ROLE_CLIENTE");
+        this.roles=Set.of(role_cliente);
+
     }
 
     @Override

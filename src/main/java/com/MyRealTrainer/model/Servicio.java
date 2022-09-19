@@ -103,6 +103,11 @@ public class Servicio {
         return true;
     }
 
+    public void fillFields(){
+        this.titulo="Boxing functional training";
+        this.descripcion="I assign you routines in order to improve your physical condition to boxing ";
+    }
+
     
 
    

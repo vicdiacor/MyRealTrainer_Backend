@@ -148,6 +148,13 @@ public class Entrenador {
     public Entrenador() {
     }
 
+    public void fillFields(){
+        this.formacion="A correct training description that has less than 400 characters: I studied sports science at the university of Seville";
+        this.descripcionExperiencia="A correct experience description that has less than 500 characters: I have been working in different gyms as monitor the last 10 years in Seville";
+        this.descripcionSobreMi="A correct description about me that has less than 500 characters: I have practised sports since i was 6 years old and i love to help people to get their objectives at the gym";
+        this.esPublico=true;
+    }
+
     public interface CreateValidation{
         
     }
