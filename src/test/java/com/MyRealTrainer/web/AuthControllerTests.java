@@ -1,9 +1,7 @@
 package com.MyRealTrainer.web;
 
-import com.MyRealTrainer.filter.JWTAuthenticationFilter;
 import com.MyRealTrainer.model.Role;
 import com.MyRealTrainer.model.Usuario;
-import com.MyRealTrainer.payload.LoginDto;
 import com.MyRealTrainer.service.CustomUserDetailsService;
 import com.MyRealTrainer.service.RoleService;
 import com.MyRealTrainer.service.UsuarioService;
@@ -19,13 +17,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.sql.Date;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 import static org.hamcrest.Matchers.*;
 
@@ -42,12 +36,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 
 

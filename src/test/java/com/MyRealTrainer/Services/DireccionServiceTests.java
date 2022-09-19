@@ -17,11 +17,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import com.MyRealTrainer.model.Direccion;
-import com.MyRealTrainer.model.Usuario;
 import com.MyRealTrainer.repository.DireccionRepository;
-import com.MyRealTrainer.repository.UsuarioRepository;
 import com.MyRealTrainer.service.DireccionService;
-import com.MyRealTrainer.service.UsuarioService;
 
 @SpringBootTest 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)

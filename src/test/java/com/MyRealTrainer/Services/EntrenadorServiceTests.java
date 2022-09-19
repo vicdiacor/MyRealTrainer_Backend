@@ -1,20 +1,12 @@
 package com.MyRealTrainer.Services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
-import java.util.Arrays;
-import java.util.HashMap;
+
+
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,15 +16,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-import com.MyRealTrainer.model.Direccion;
 import com.MyRealTrainer.model.Entrenador;
 import com.MyRealTrainer.model.LugarEntrenamiento;
 import com.MyRealTrainer.model.TipoLugar;
 import com.MyRealTrainer.model.Usuario;
 import com.MyRealTrainer.repository.EntrenadorRepository;
-import com.MyRealTrainer.repository.LugarEntrenamientoRepository;
-import com.MyRealTrainer.repository.UsuarioRepository;
-import com.MyRealTrainer.service.DireccionService;
+
 import com.MyRealTrainer.service.EntrenadorService;
 import com.MyRealTrainer.service.LugarEntrenamientoService;
 import com.MyRealTrainer.service.UsuarioService;
