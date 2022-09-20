@@ -23,6 +23,7 @@ import com.MyRealTrainer.repository.TarifaRepository;
 import com.MyRealTrainer.service.LugarEntrenamientoService;
 import com.MyRealTrainer.service.TarifaService;
 
+
 @SpringBootTest 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class TarifaServiceTests {

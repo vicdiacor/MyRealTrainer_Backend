@@ -1,10 +1,8 @@
 package com.MyRealTrainer.service;
 
-import com.MyRealTrainer.repository.LugarEntrenamientoRepository;
 import com.MyRealTrainer.repository.ServicioEntrenamientoRepository;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -13,16 +11,11 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import com.MyRealTrainer.model.Direccion;
-import com.MyRealTrainer.model.Entrenador;
-import com.MyRealTrainer.model.LugarEntrenamiento;
+
 import com.MyRealTrainer.model.Servicio;
 import com.MyRealTrainer.model.Tarifa;
-import com.MyRealTrainer.model.TipoLugar;
 import com.MyRealTrainer.model.Usuario;
 
-import org.apache.bcel.Repository;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -70,7 +63,7 @@ public class ServicioEntrenamientoService {
         return response;
     }
 
-      // After editing a Servicio, the followind method deletes the old tarifas that were linked to it 
+      // After editing a Servicio, the following method deletes the old tarifas that were linked to it 
       // but they didnt come from the form this time
 
       public  void  deleteMissingTarifas(Servicio editedService,Servicio oldService){
@@ -103,7 +96,7 @@ public class ServicioEntrenamientoService {
         if(!editMode){
             servicio.setEntrenador(usuario.getEntrenador());
         }
-            if(servicio.getTarifas().size()<1){
+            if(servicio.getTarifas()==null || servicio.getTarifas().size()<1){
                 errores.add("Debes asignar al menos una tarifa");
                 response.put("errores", errores);
             }else{
@@ -123,7 +116,7 @@ public class ServicioEntrenamientoService {
                 }
                 // Delete the old tarifas that arent in the edited service
 
-                servicio.setTarifas(savedTarifas);
+                savedServicio.setTarifas(savedTarifas);
                 response.put("servicio", savedServicio);
 
             }

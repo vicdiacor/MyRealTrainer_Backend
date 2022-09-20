@@ -1,8 +1,6 @@
 package com.MyRealTrainer.service;
 
-import com.MyRealTrainer.repository.EntrenadorRepository;
 import com.MyRealTrainer.repository.TarifaRepository;
-import com.MyRealTrainer.repository.UsuarioRepository;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,14 +8,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import com.MyRealTrainer.model.Entrenador;
 import com.MyRealTrainer.model.LugarEntrenamiento;
 import com.MyRealTrainer.model.Servicio;
 import com.MyRealTrainer.model.Tarifa;
-import com.MyRealTrainer.model.Usuario;
 
-import org.apache.bcel.Repository;
-import org.springframework.beans.BeanUtils;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
