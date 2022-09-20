@@ -82,35 +82,7 @@ public class EntrenadorController {
     }
 
     
-@PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
-@PutMapping("/{id}/edit")
-@SuppressWarnings("rawtypes")
-public ResponseEntity updateUsuario(@PathVariable Long id,  @Valid Usuario updatedUser, BindingResult binding) {
-    Map<String,Object> response = new HashMap<>();
-    List<String> errores = new ArrayList<String>();
-    if(binding.hasErrors()){
-        errores= utilService.getErrorMessages(binding, errores);
-        response.put("errores", errores);
-        return ResponseEntity.badRequest().body(response);
-    }
-    Optional<Usuario> currentUser = usuarioService.findById(id);
-    if(!currentUser.isPresent()){
-        errores.add("Este usuario no existe");
-        response.put("errores", errores);
-        return ResponseEntity.badRequest().body(response);
-    }else if(SecurityContextHolder.getContext().getAuthentication().getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN")) || currentUser.get().getEmail().equals(SecurityContextHolder.getContext().getAuthentication().getPrincipal())){
-        Usuario newUser= usuarioService.updateUser(updatedUser, currentUser.get());
-        response.put("usuario", newUser);
-        return ResponseEntity.ok(response);
-       
-    }else{
-        errores.add("Solo puedes editar los datos de tu perfil");
-        response.put("errores", errores);
-        return ResponseEntity.badRequest().body(response);
 
-    }
-    
-    }
     
    
 }
