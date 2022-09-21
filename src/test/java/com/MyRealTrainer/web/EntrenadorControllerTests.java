@@ -131,7 +131,7 @@ public class EntrenadorControllerTests {
 		.andExpect(status().isBadRequest()).andExpect(jsonPath("$.errores").exists());;
 	}
 
-	@DisplayName("Create entrenador binding errors")
+	@DisplayName("Create entrenador with inexistent user")
 	@WithMockCustomUser(username =emailUsuario , roles = {"ROLE_CLIENTE","ROLE_ENTRENADOR"})
     @Test
 	void testCreateUserNotExists() throws Exception {
@@ -145,7 +145,7 @@ public class EntrenadorControllerTests {
 
 		// Test and Assert
 		mockMvc.perform(post("/entrenadores/"+emailUsuario).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(entrenador)))
-		.andExpect(status().isBadRequest()).andExpect(jsonPath("$.errores[0]").value("Este usuario no existe"));;
+		.andExpect(status().isBadRequest()).andExpect(jsonPath("$.errores[0]").value("Este usuario no existe"));
 	}
 
 
