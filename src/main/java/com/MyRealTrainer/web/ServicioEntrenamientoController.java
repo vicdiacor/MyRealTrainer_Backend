@@ -101,7 +101,7 @@ public class ServicioEntrenamientoController {
         response.put("errores", errores);
 	    return ResponseEntity.badRequest().body(response);
 
-    }else if(SecurityContextHolder.getContext().getAuthentication().getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN")) || usuario.get().getEmail().equals(SecurityContextHolder.getContext().getAuthentication().getPrincipal())){
+    }else {
         Map<String,Object> responseService= servicioEntrenamientoService.findMyServicios(usuario.get());
         if (responseService.containsKey("errores")){
             errores.addAll((List<String>) responseService.get("errores"));
@@ -113,10 +113,6 @@ public class ServicioEntrenamientoController {
         }
 
         
-    }else{
-        errores.add("No tienes permiso para crear un servicio para este usuario");
-        response.put("errores", errores);
-        return ResponseEntity.badRequest().body(response);
     }
     }
 
