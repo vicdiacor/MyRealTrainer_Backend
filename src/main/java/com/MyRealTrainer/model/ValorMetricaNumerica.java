@@ -1,19 +1,21 @@
 package com.MyRealTrainer.model;
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-
+import javax.validation.constraints.Digits;
 import org.springframework.lang.NonNull;
 
 @Entity
-@Table(name = "roles")
-public class Role {
+@Table(name = "valores_metricas_numericas")
+public class ValorMetricaNumerica extends ValorMetrica{
+    
+    // Attributes
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
-    @NotBlank
-    private String name;
+
+    @NonNull
+    @Digits(fraction=2,integer=7)
+    private Double valor;
 
     public Long getId() {
         return id;
@@ -23,20 +25,20 @@ public class Role {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public Double getValor() {
+        return valor;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setValor(Double valor) {
+        this.valor = valor;
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
-        int result = 1;
+        int result = super.hashCode();
         result = prime * result + ((id == null) ? 0 : id.hashCode());
-        result = prime * result + ((name == null) ? 0 : name.hashCode());
+        result = prime * result + ((valor == null) ? 0 : valor.hashCode());
         return result;
     }
 
@@ -44,27 +46,26 @@ public class Role {
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
-        if (obj == null)
+        if (!super.equals(obj))
             return false;
         if (getClass() != obj.getClass())
             return false;
-        Role other = (Role) obj;
+        ValorMetricaNumerica other = (ValorMetricaNumerica) obj;
         if (id == null) {
             if (other.id != null)
                 return false;
         } else if (!id.equals(other.id))
             return false;
-        if (name == null) {
-            if (other.name != null)
+        if (valor == null) {
+            if (other.valor != null)
                 return false;
-        } else if (!name.equals(other.name))
+        } else if (!valor.equals(other.valor))
             return false;
         return true;
     }
 
-    public Role() {
+    public ValorMetricaNumerica() {
     }
 
-    
     
 }
