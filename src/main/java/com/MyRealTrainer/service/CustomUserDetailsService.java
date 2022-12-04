@@ -1,8 +1,9 @@
 package com.MyRealTrainer.service;
 
-import com.MyRealTrainer.model.Client;
+import com.MyRealTrainer.model.Usuario;
 import com.MyRealTrainer.model.Role;
-import com.MyRealTrainer.repository.ClientRepository;
+import com.MyRealTrainer.model.TipoRol;
+import com.MyRealTrainer.repository.UsuarioRepository;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -19,17 +20,16 @@ import org.springframework.stereotype.Service;
 public class CustomUserDetailsService implements UserDetailsService  {
 
     @Autowired
-    private ClientRepository clientRepository;
+    private UsuarioRepository UsuarioRepository;
 
-    public CustomUserDetailsService(ClientRepository clientRepository) {
-        this.clientRepository = clientRepository;
-    }
+  
 
     @Override
-    public UserDetails loadUserByUsername(String nameOrEmail) throws UsernameNotFoundException {
-        Client user = clientRepository.findByNameOrEmail(nameOrEmail, nameOrEmail)
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        
+        Usuario user = UsuarioRepository.findByEmail(email)
         .orElseThrow(() ->
-                new UsernameNotFoundException("User not found with username or email:" + nameOrEmail));
+                new UsernameNotFoundException("User not found with email:" + email));
         return new org.springframework.security.core.userdetails.User(user.getEmail(),
          user.getPassword(), mapRolesToAuthorities(user.getRoles()));
 }

@@ -2,22 +2,20 @@ package com.MyRealTrainer.web;
 
 
 import java.util.Collections;
+import java.util.Date;
 
-import com.MyRealTrainer.model.Client;
+import com.MyRealTrainer.model.Usuario;
 import com.MyRealTrainer.model.Role;
-import com.MyRealTrainer.payload.LoginDto;
-import com.MyRealTrainer.payload.SignUpDto;
-import com.MyRealTrainer.repository.ClientRepository;
-import com.MyRealTrainer.repository.RoleRepository;
+import com.MyRealTrainer.service.RoleService;
+import com.MyRealTrainer.service.UsuarioService;
+import com.MyRealTrainer.service.UtilService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,11 +24,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
-
-
-
-
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -40,71 +36,66 @@ public class AuthController {
     private AuthenticationManager authenticationManager;
 
     @Autowired
-    private ClientRepository clientRepository;
+    private UsuarioService usuarioService;
 
     @Autowired
-    private RoleRepository roleRepository;
+    private RoleService roleService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @PostMapping("/signin")
-    public ResponseEntity<?> authenticateUser(@RequestBody LoginDto loginDto){
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                loginDto.getnameOrEmail(), loginDto.getPassword()));
+    
+    @Autowired
+    private UtilService utilService;
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        
+   
+
+    @PostMapping("/signup")
+    public ResponseEntity<?> registerUser(@Valid @RequestBody Usuario usuario, BindingResult binding){
         Map<String,Object> response = new HashMap<>();
         List<String> errores = new ArrayList<>();
-        Client userlogged = clientRepository.findByNameOrEmail(loginDto.getnameOrEmail(), loginDto.getnameOrEmail()).get();
-
-        if(userlogged == null){
-            errores.add("Este usuario no está registrado. Primero debes registrarte");
+        if(binding.hasErrors()){
+            errores= utilService.getErrorMessages(binding, errores);
             response.put("errores", errores);
             return ResponseEntity.badRequest().body(response);
         }
-        
-        clientRepository.save(userlogged);
-        return new ResponseEntity<>("User signed-in successfully!.", HttpStatus.OK);
-    }
 
-
-    @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@RequestBody SignUpDto signUpDto){
-        Map<String,Object> response = new HashMap<>();
-        List<String> errores = new ArrayList<>();
-
-        // add check for email exists in DB
-        if(clientRepository.existsByEmail(signUpDto.getEmail())){
+        // checks if email exists in database
+        if(usuarioService.existsByEmail(usuario.getEmail())){
             errores.add("Este email ya está registrado");
             response.put("errores", errores);
             return ResponseEntity.badRequest().body(response);
         }
 
-        if(!signUpDto.getPassword().equals(signUpDto.getConfirm())){
-            errores.add("Las contraseñas no coinciden");
-            response.put("errores", errores);
-            return ResponseEntity.badRequest().body(response);
-        }
-
-     
-        
-
         // create user object
-        Client user = new Client();
-        user.setName(signUpDto.getName());
-        user.setEmail(signUpDto.getEmail());
-        user.setPassword(passwordEncoder.encode(signUpDto.getPassword()));
-        user.setApellidos(signUpDto.getApellidos());
+        Usuario user = new Usuario();
+        user.setNombre(usuario.getNombre());
+        user.setEmail(usuario.getEmail());
+        user.setPassword(passwordEncoder.encode(usuario.getPassword()));
+        user.setApellidos(usuario.getApellidos());
+        Date fechaNacimiento = usuario.getFechaNacimiento();
+        fechaNacimiento.setHours(0);
+        fechaNacimiento.setMinutes(0);
+        fechaNacimiento.setSeconds(0);
+        user.setFechaNacimiento(fechaNacimiento);
+        user.setLocalidad(usuario.getLocalidad());
+       
+        // add URL Foto perfil
 
+        // add Tipo de rol
+
+        Optional<Role> roles = roleService.findByName("ROLE_CLIENTE");
+        if(roles.isPresent()){
+            user.setRoles(Collections.singleton(roles.get()));
+        }else{
+            Role rolCliente= new Role();
+            rolCliente.setName("ROLE_CLIENTE");
+            roleService.save(rolCliente);
+            user.setRoles(Collections.singleton(rolCliente));
+
+        }
         
-
-        Role roles = roleRepository.findByName("ROLE_USER").get();
-        user.setRoles(Collections.singleton(roles));
-        
-        clientRepository.save(user);
-
+        usuarioService.save(user);
         return new ResponseEntity<>("Usuario registrado correctamente", HttpStatus.OK);
 
     }    
