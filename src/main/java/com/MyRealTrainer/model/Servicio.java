@@ -3,6 +3,7 @@ import java.util.List;
 import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -22,6 +23,10 @@ public class Servicio {
     @Size(max=500)
     @NotBlank
     private String descripcion;
+
+    @NotNull
+    private boolean esPublico;
+
 
     // Relaciones
 
@@ -78,17 +83,26 @@ public class Servicio {
         this.tarifas = tarifas;
     }
 
-    
+    public boolean isEsPublico() {
+        return esPublico;
+    }
 
+    public void setEsPublico(boolean esPublico) {
+        this.esPublico = esPublico;
+    }
+
+    
+    
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((descripcion == null) ? 0 : descripcion.hashCode());
-        result = prime * result + ((entrenador == null) ? 0 : entrenador.hashCode());
         result = prime * result + ((id == null) ? 0 : id.hashCode());
-        result = prime * result + ((tarifas == null) ? 0 : tarifas.hashCode());
         result = prime * result + ((titulo == null) ? 0 : titulo.hashCode());
+        result = prime * result + ((descripcion == null) ? 0 : descripcion.hashCode());
+        result = prime * result + (esPublico ? 1231 : 1237);
+        result = prime * result + ((entrenador == null) ? 0 : entrenador.hashCode());
+        result = prime * result + ((tarifas == null) ? 0 : tarifas.hashCode());
         return result;
     }
 
@@ -101,30 +115,32 @@ public class Servicio {
         if (getClass() != obj.getClass())
             return false;
         Servicio other = (Servicio) obj;
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
+            return false;
+        if (titulo == null) {
+            if (other.titulo != null)
+                return false;
+        } else if (!titulo.equals(other.titulo))
+            return false;
         if (descripcion == null) {
             if (other.descripcion != null)
                 return false;
         } else if (!descripcion.equals(other.descripcion))
+            return false;
+        if (esPublico != other.esPublico)
             return false;
         if (entrenador == null) {
             if (other.entrenador != null)
                 return false;
         } else if (!entrenador.equals(other.entrenador))
             return false;
-        if (id == null) {
-            if (other.id != null)
-                return false;
-        } else if (!id.equals(other.id))
-            return false;
         if (tarifas == null) {
             if (other.tarifas != null)
                 return false;
         } else if (!tarifas.equals(other.tarifas))
-            return false;
-        if (titulo == null) {
-            if (other.titulo != null)
-                return false;
-        } else if (!titulo.equals(other.titulo))
             return false;
         return true;
     }
@@ -133,6 +149,7 @@ public class Servicio {
         this.titulo="Boxing functional training";
         this.descripcion="I assign you routines in order to improve your physical condition to boxing ";
     }
+
 
     
 

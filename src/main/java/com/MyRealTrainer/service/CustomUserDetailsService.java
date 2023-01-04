@@ -2,8 +2,8 @@ package com.MyRealTrainer.service;
 
 import com.MyRealTrainer.model.Usuario;
 import com.MyRealTrainer.model.Role;
-import com.MyRealTrainer.model.TipoRol;
 import com.MyRealTrainer.repository.UsuarioRepository;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -14,7 +14,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService  {

@@ -24,8 +24,6 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
 
-import org.springframework.lang.NonNull;
-
 import com.MyRealTrainer.service.UtilService;
 
 

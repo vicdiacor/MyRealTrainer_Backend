@@ -3,6 +3,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.persistence.*;
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
@@ -16,16 +17,15 @@ public class Rutina {
     private Long id;
 
     @NotBlank
-    @Size(max=80)
+    @Size(max=100)
     private String titulo;
-    
-    @NotBlank
+
     @Size(max=300)
     private String descripcion;
 
     // Relaciones
 
-    @ManyToOne(optional = true)
+    @ManyToOne(optional = false)
     @JoinColumn(name="entrenador_id")
     private Entrenador entrenador;
 
@@ -39,7 +39,8 @@ public class Rutina {
                inverseJoinColumns = @JoinColumn(name = "etiquetas_id", referencedColumnName = "id"))
     private Set<Etiqueta> etiquetas = new HashSet<>();
 
-    @OneToMany(mappedBy = "rutina")
+    @OneToMany(mappedBy = "rutina",cascade = CascadeType.REMOVE)
+    @Valid
     private List<Entrenamiento> entrenamientos;
     
     // Métodos
@@ -82,6 +83,14 @@ public class Rutina {
 
     public void setContrato(Contrato contrato) {
         this.contrato = contrato;
+    }
+
+    public List<Entrenamiento> getEntrenamientos() {
+        return entrenamientos;
+    }
+
+    public void setEntrenamientos(List<Entrenamiento> entrenamientos) {
+        this.entrenamientos = entrenamientos;
     }
 
     public Set<Etiqueta> getEtiquetas() {

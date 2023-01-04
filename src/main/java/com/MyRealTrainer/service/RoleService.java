@@ -1,13 +1,10 @@
 package com.MyRealTrainer.service;
 
 import com.MyRealTrainer.repository.RoleRepository;
-import com.MyRealTrainer.repository.UsuarioRepository;
 
-import java.util.List;
 import java.util.Optional;
 
 import com.MyRealTrainer.model.Role;
-import com.MyRealTrainer.model.Usuario;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

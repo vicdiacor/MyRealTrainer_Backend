@@ -1,8 +1,6 @@
 package com.MyRealTrainer.web;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,7 +8,7 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
-import org.apache.commons.logging.Log;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +16,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,11 +25,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.MyRealTrainer.model.Entrenador;
-import com.MyRealTrainer.model.LugarEntrenamiento;
+
 import com.MyRealTrainer.model.Servicio;
 import com.MyRealTrainer.model.Usuario;
-import com.MyRealTrainer.service.EntrenadorService;
 import com.MyRealTrainer.service.LugarEntrenamientoService;
 import com.MyRealTrainer.service.ServicioEntrenamientoService;
 import com.MyRealTrainer.service.UsuarioService;
@@ -50,9 +45,12 @@ public class ServicioEntrenamientoController {
 
     @Autowired
     private UtilService utilService;
+
+    @Autowired
+    private LugarEntrenamientoService lugarService;
     
     @SuppressWarnings("rawtypes")
-    @PreAuthorize("hasAnyRole('ROLE_ENTRENADOR','ROLE_ADMIN','ROLE_CLIENTE')")
+    @PreAuthorize("hasAnyRole('ROLE_ENTRENADOR','ROLE_ADMIN')")
     @PostMapping("/{email}")
     public ResponseEntity createServicio(@PathVariable String email,  @Valid @RequestBody Servicio newServicio, BindingResult binding) {
     Map<String,Object> response = new HashMap<>();
@@ -63,23 +61,33 @@ public class ServicioEntrenamientoController {
         return ResponseEntity.badRequest().body(response);
     }
     Optional<Usuario> usuario = usuarioService.findByEmail(email);
+   
     if(!usuario.isPresent()){
         errores.add("Este usuario no existe");
         response.put("errores", errores);
 	    return ResponseEntity.badRequest().body(response);
 
     }else if(SecurityContextHolder.getContext().getAuthentication().getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN")) || usuario.get().getEmail().equals(SecurityContextHolder.getContext().getAuthentication().getPrincipal())){
-        Map<String,Object> responseService= servicioEntrenamientoService.constructAndSave(newServicio, usuario.get());
         
-        if (responseService.containsKey("errores")){
-            errores.addAll((List<String>) responseService.get("errores"));
-            response.put("errores",errores);
-            return ResponseEntity.badRequest().body(response);
-
-        }else{
-            return ResponseEntity.ok(responseService.get("servicio"));
-        }
-
+            if(lugarService.usingMyOwnLugares(newServicio.getTarifas(), usuario.get().getEntrenador().getLugares())){
+                newServicio = servicioEntrenamientoService.setAllIdToNull(newServicio);
+                Map<String,Object> responseService= servicioEntrenamientoService.constructAndSave(newServicio, usuario.get());
+            
+                if (responseService.containsKey("errores")){
+                    errores.addAll((List<String>) responseService.get("errores"));
+                    response.put("errores",errores);
+                    return ResponseEntity.badRequest().body(response);
+        
+                }else{
+                    return ResponseEntity.ok(responseService.get("servicio"));
+                }
+        
+            }else{
+                errores.add("No puedes crear servicios con tarifas asociadas a lugares de entrenamiento de otros entrenadores");
+                response.put("errores", errores);
+                return ResponseEntity.badRequest().body(response);
+            }
+           
         
     }else{
         errores.add("No tienes permiso para crear un servicio para este usuario");
@@ -90,7 +98,7 @@ public class ServicioEntrenamientoController {
 
     
     @SuppressWarnings("rawtypes")
-    @PreAuthorize("hasAnyRole('ROLE_ENTRENADOR','ROLE_ADMIN','ROLE_CLIENTE')")
+    @PreAuthorize("hasAnyRole('ROLE_ENTRENADOR','ROLE_CLIENTE','ROLE_ADMIN')")
     @GetMapping("/{email}")
     public ResponseEntity findMyServicios(@PathVariable String email) {
     Map<String,Object> response = new HashMap<>();
@@ -117,7 +125,7 @@ public class ServicioEntrenamientoController {
     }
 
     @SuppressWarnings("rawtypes")
-	@PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_ENTRENADOR','ROLE_CLIENTE')")
+	@PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_ENTRENADOR')")
     @PutMapping("/{id}")
     public ResponseEntity updateServicio(@PathVariable Long id, @Valid @RequestBody Servicio editedService, BindingResult binding) {
     Map<String,Object> response = new HashMap<>();
@@ -136,20 +144,26 @@ public class ServicioEntrenamientoController {
     }else if(SecurityContextHolder.getContext().getAuthentication().getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN")) || oldService.get().getEntrenador().getUsuario().getEmail().equals(SecurityContextHolder.getContext().getAuthentication().getPrincipal())){
         boolean editingMyOwnTarifas= servicioEntrenamientoService.editingMyOwnTarifas(oldService.get(), editedService);
         if(editingMyOwnTarifas){
-            servicioEntrenamientoService.deleteMissingTarifas(editedService,oldService.get());
-            BeanUtils.copyProperties(editedService, oldService.get(),"id","entrenador");
-            Map<String,Object> responseService= servicioEntrenamientoService.constructAndSave(oldService.get(), oldService.get().getEntrenador().getUsuario());
-            
-            if (responseService.containsKey("errores")){
-                errores.addAll((List<String>) responseService.get("errores"));
-                response.put("errores",errores);
+             if(lugarService.usingMyOwnLugares(editedService.getTarifas(), oldService.get().getEntrenador().getLugares())){
+                servicioEntrenamientoService.deleteMissingTarifas(editedService,oldService.get());
+                BeanUtils.copyProperties(editedService, oldService.get(),"id","entrenador");
+                Map<String,Object> responseService= servicioEntrenamientoService.constructAndSave(oldService.get(), oldService.get().getEntrenador().getUsuario());
+                if (responseService.containsKey("errores")){
+                    errores.addAll((List<String>) responseService.get("errores"));
+                    response.put("errores",errores);
+                    return ResponseEntity.badRequest().body(response);
+        
+                }else{
+                    return ResponseEntity.ok(responseService.get("servicio"));
+                }
+             }else{
+                errores.add("No puedes asociar lugares de entrenamiento de otros entrenadores a las tarifas de tus servicios");
+                response.put("errores", errores);
                 return ResponseEntity.badRequest().body(response);
-    
-            }else{
-                return ResponseEntity.ok(responseService.get("servicio"));
-            }
+             }
+            
         }else{
-            errores.add("Estás intentando modificar o asociar a tus servicios tarifas de otros usuarios");
+            errores.add("No puedes modificar o asociar a tus servicios, tarifas de otros usuarios");
             response.put("errores", errores);
             return ResponseEntity.badRequest().body(response);
         }
@@ -163,9 +177,9 @@ public class ServicioEntrenamientoController {
 }
 
 @SuppressWarnings("rawtypes")
-@PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_ENTRENADOR','ROLE_CLIENTE')")
+@PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_ENTRENADOR')")
 @DeleteMapping("/{id}")
- public ResponseEntity deletePlaza(@PathVariable Long id) {
+ public ResponseEntity deleteServicio(@PathVariable Long id) {
     Map<String,Object> response = new HashMap<>();
     List<String> errores = new ArrayList<String>();
     Optional<Servicio> oldService = servicioEntrenamientoService.findById(id);

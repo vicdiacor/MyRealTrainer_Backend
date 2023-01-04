@@ -14,25 +14,25 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.MyRealTrainer.model.LugarEntrenamiento;
+import com.MyRealTrainer.model.Rutina;
 import com.MyRealTrainer.model.Usuario;
-import com.MyRealTrainer.service.LugarEntrenamientoService;
+import com.MyRealTrainer.service.EjercicioService;
+import com.MyRealTrainer.service.RutinaService;
 import com.MyRealTrainer.service.UsuarioService;
 import com.MyRealTrainer.service.UtilService;
 
 @RestController
-@RequestMapping("/lugares")
-public class LugarEntrenamientoController {
+@RequestMapping("/rutinas")
+public class RutinaController {
     
     @Autowired
-    private LugarEntrenamientoService lugarService;
+    private RutinaService rutinaService;
 
     @Autowired
     private UsuarioService usuarioService;
@@ -40,10 +40,13 @@ public class LugarEntrenamientoController {
     @Autowired
     private UtilService utilService;
     
+    @Autowired
+    private EjercicioService ejercicioService;
+    
     @SuppressWarnings("rawtypes")
     @PreAuthorize("hasAnyRole('ROLE_ENTRENADOR','ROLE_ADMIN')")
     @PostMapping("/{email}")
-    public ResponseEntity createLugar(@PathVariable String email,  @Valid @RequestBody LugarEntrenamiento newLugar, BindingResult binding) {
+    public ResponseEntity createRutina(@PathVariable String email,  @Valid @RequestBody Rutina newRutina, BindingResult binding) {
     Map<String,Object> response = new HashMap<>();
     List<String> errores = new ArrayList<String>();
     if(binding.hasErrors()){
@@ -52,56 +55,40 @@ public class LugarEntrenamientoController {
         return ResponseEntity.badRequest().body(response);
     }
     Optional<Usuario> usuario = usuarioService.findByEmail(email);
-    if(!usuario.isPresent()){
-        errores.add("Este usuario no existe");
-        response.put("errores", errores);
-	    return ResponseEntity.badRequest().body(response);
-
-    }else if(SecurityContextHolder.getContext().getAuthentication().getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN")) || usuario.get().getEmail().equals(SecurityContextHolder.getContext().getAuthentication().getPrincipal())){
-        Map<String,Object> responseService= lugarService.createNewLugar(newLugar,usuario.get());
-        
-        if (responseService.containsKey("errores")){
-            errores.addAll((List<String>) responseService.get("errores"));
-            response.put("errores",errores);
-            return ResponseEntity.badRequest().body(response);
-
-        }else{
-            return ResponseEntity.ok(responseService.get("lugar"));
-        }
-
-        
-    }else{
-        errores.add("No tienes permiso para asociar este lugar de entrenamiento a este usuario");
-        response.put("errores", errores);
-        return ResponseEntity.badRequest().body(response);
-    }
-    }
-
-    @PreAuthorize("hasAnyRole('ROLE_ENTRENADOR','ROLE_ADMIN')")
-    @GetMapping("/{email}")
-    public ResponseEntity findMyLugares(@PathVariable String email) {
-    Map<String,Object> response = new HashMap<>();
-    List<String> errores = new ArrayList<String>();
-    Optional<Usuario> usuario = usuarioService.findByEmail(email);
-    if(!usuario.isPresent()){
-        errores.add("Este usuario no existe");
-        response.put("errores", errores);
-	    return ResponseEntity.badRequest().body(response);
-
-    }else if(SecurityContextHolder.getContext().getAuthentication().getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN")) || usuario.get().getEmail().equals(SecurityContextHolder.getContext().getAuthentication().getPrincipal())){
-        Map<Long,LugarEntrenamiento> lugaresMap= lugarService.createMapLugares(usuario.get().getEntrenador().getLugares());
-        return ResponseEntity.ok(lugaresMap);
-        
-    }else{
-        errores.add("No tienes permiso para obtener los lugares de las sesiones de este usuario");
-        response.put("errores", errores);
-        return ResponseEntity.badRequest().body(response);
-    }
-    }
-
-    
-
    
+    if(!usuario.isPresent()){
+        errores.add("Este usuario no existe");
+        response.put("errores", errores);
+	    return ResponseEntity.badRequest().body(response);
+        
+    }else if(SecurityContextHolder.getContext().getAuthentication().getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN")) || usuario.get().getEmail().equals(SecurityContextHolder.getContext().getAuthentication().getPrincipal())){
+        
+            if(ejercicioService.usingPublicOrMyEjercicios(newRutina, usuario.get())){
+                newRutina = rutinaService.setAllIdToNullExceptEjercicios(newRutina);
+                Map<String,Object> responseService= rutinaService.createNewRutina(newRutina, usuario.get());
+            
+                if (responseService.containsKey("errores")){
+                    errores.addAll((List<String>) responseService.get("errores"));
+                    response.put("errores",errores);
+                    return ResponseEntity.badRequest().body(response);
+        
+                }else{
+                    return ResponseEntity.ok(responseService.get("rutina"));
+                }
+        
+            }else{
+                errores.add("No puedes crear rutinas asociadas a ejercicios privados de otros entrenadores");
+                response.put("errores", errores);
+                return ResponseEntity.badRequest().body(response);
+            }
+           
+        
+    }else{
+        errores.add("No tienes permiso para crear una rutina para este usuario");
+        response.put("errores", errores);
+        return ResponseEntity.badRequest().body(response);
+    }
+    }
     
    
 }

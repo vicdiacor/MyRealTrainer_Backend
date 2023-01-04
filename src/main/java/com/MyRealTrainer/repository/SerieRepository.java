@@ -2,9 +2,10 @@ package com.MyRealTrainer.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.MyRealTrainer.model.Tarifa;
+import com.MyRealTrainer.model.Serie;
 
-public interface TarifaRepository extends JpaRepository<Tarifa, Long> {
+
+public interface SerieRepository extends JpaRepository<Serie, Long> {
 
 
 

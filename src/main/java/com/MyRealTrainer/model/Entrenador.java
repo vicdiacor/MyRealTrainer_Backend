@@ -2,13 +2,9 @@ package com.MyRealTrainer.model;
 
 import java.util.List;
 
-import javax.annotation.Nonnull;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-
-import org.springframework.lang.NonNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -20,8 +16,7 @@ public class Entrenador {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @NotNull
-    private boolean esPublico;
+   
 
     @NotBlank
     @Size(max = 400)
@@ -62,14 +57,7 @@ public class Entrenador {
         this.id = id;
     }
 
-    public boolean isEsPublico() {
-        return esPublico;
-    }
-
-    public void setEsPublico(boolean esPublico) {
-        this.esPublico = esPublico;
-    }
-
+   
     public String getFormacion() {
         return formacion;
     }
@@ -122,19 +110,19 @@ public class Entrenador {
 
   
 
+
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((contratos == null) ? 0 : contratos.hashCode());
-        result = prime * result + ((descripcionExperiencia == null) ? 0 : descripcionExperiencia.hashCode());
-        result = prime * result + ((descripcionSobreMi == null) ? 0 : descripcionSobreMi.hashCode());
-        result = prime * result + (esPublico ? 1231 : 1237);
-        result = prime * result + ((formacion == null) ? 0 : formacion.hashCode());
         result = prime * result + ((id == null) ? 0 : id.hashCode());
-        result = prime * result + ((lugares == null) ? 0 : lugares.hashCode());
-        result = prime * result + ((servicios == null) ? 0 : servicios.hashCode());
+        result = prime * result + ((formacion == null) ? 0 : formacion.hashCode());
+        result = prime * result + ((descripcionSobreMi == null) ? 0 : descripcionSobreMi.hashCode());
+        result = prime * result + ((descripcionExperiencia == null) ? 0 : descripcionExperiencia.hashCode());
         result = prime * result + ((usuario == null) ? 0 : usuario.hashCode());
+        result = prime * result + ((servicios == null) ? 0 : servicios.hashCode());
+        result = prime * result + ((lugares == null) ? 0 : lugares.hashCode());
+        result = prime * result + ((contratos == null) ? 0 : contratos.hashCode());
         return result;
     }
 
@@ -147,47 +135,45 @@ public class Entrenador {
         if (getClass() != obj.getClass())
             return false;
         Entrenador other = (Entrenador) obj;
-        if (contratos == null) {
-            if (other.contratos != null)
+        if (id == null) {
+            if (other.id != null)
                 return false;
-        } else if (!contratos.equals(other.contratos))
-            return false;
-        if (descripcionExperiencia == null) {
-            if (other.descripcionExperiencia != null)
-                return false;
-        } else if (!descripcionExperiencia.equals(other.descripcionExperiencia))
-            return false;
-        if (descripcionSobreMi == null) {
-            if (other.descripcionSobreMi != null)
-                return false;
-        } else if (!descripcionSobreMi.equals(other.descripcionSobreMi))
-            return false;
-        if (esPublico != other.esPublico)
+        } else if (!id.equals(other.id))
             return false;
         if (formacion == null) {
             if (other.formacion != null)
                 return false;
         } else if (!formacion.equals(other.formacion))
             return false;
-        if (id == null) {
-            if (other.id != null)
+        if (descripcionSobreMi == null) {
+            if (other.descripcionSobreMi != null)
                 return false;
-        } else if (!id.equals(other.id))
+        } else if (!descripcionSobreMi.equals(other.descripcionSobreMi))
             return false;
-        if (lugares == null) {
-            if (other.lugares != null)
+        if (descripcionExperiencia == null) {
+            if (other.descripcionExperiencia != null)
                 return false;
-        } else if (!lugares.equals(other.lugares))
+        } else if (!descripcionExperiencia.equals(other.descripcionExperiencia))
+            return false;
+        if (usuario == null) {
+            if (other.usuario != null)
+                return false;
+        } else if (!usuario.equals(other.usuario))
             return false;
         if (servicios == null) {
             if (other.servicios != null)
                 return false;
         } else if (!servicios.equals(other.servicios))
             return false;
-        if (usuario == null) {
-            if (other.usuario != null)
+        if (lugares == null) {
+            if (other.lugares != null)
                 return false;
-        } else if (!usuario.equals(other.usuario))
+        } else if (!lugares.equals(other.lugares))
+            return false;
+        if (contratos == null) {
+            if (other.contratos != null)
+                return false;
+        } else if (!contratos.equals(other.contratos))
             return false;
         return true;
     }
@@ -199,7 +185,7 @@ public class Entrenador {
         this.formacion="A correct training description that has less than 400 characters: I studied sports science at the university of Seville";
         this.descripcionExperiencia="A correct experience description that has less than 500 characters: I have been working in different gyms as monitor the last 10 years in Seville";
         this.descripcionSobreMi="A correct description about me that has less than 500 characters: I have practised sports since i was 6 years old and i love to help people to get their objectives at the gym";
-        this.esPublico=true;
+       
     }
 
     public interface CreateValidation{

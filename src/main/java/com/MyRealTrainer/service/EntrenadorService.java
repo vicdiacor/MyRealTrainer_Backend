@@ -1,19 +1,22 @@
 package com.MyRealTrainer.service;
 
 import com.MyRealTrainer.repository.EntrenadorRepository;
-import com.MyRealTrainer.repository.UsuarioRepository;
+
 
 import java.util.ArrayList;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import com.MyRealTrainer.model.Entrenador;
-import com.MyRealTrainer.model.LugarEntrenamiento;
+
+import com.MyRealTrainer.model.Role;
 import com.MyRealTrainer.model.Usuario;
 
-import org.apache.bcel.Repository;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,6 +33,9 @@ public class EntrenadorService {
 
     @Autowired
     private LugarEntrenamientoService lugarService;
+
+    @Autowired
+    private RoleService roleService;
     
     
 
@@ -55,6 +61,20 @@ public class EntrenadorService {
             errores.add("No puedes crear un perfil de entrenador si ya tenías uno previamente");
             response.put("errores", errores);
         }else{
+            Optional<Role> roles = roleService.findByName("ROLE_ENTRENADOR");
+            if(roles.isPresent()){
+                Set<Role> rolesUsuario = usuario.getRoles();
+                rolesUsuario.add(roles.get());
+                usuario.setRoles(rolesUsuario);
+            }else{
+                Role rolEntrenador= new Role();
+                rolEntrenador.setName("ROLE_ENTRENADOR");
+                roleService.save(rolEntrenador);
+                Set<Role> rolesUsuario = usuario.getRoles();
+                rolesUsuario.add(rolEntrenador);
+                usuario.setRoles(rolesUsuario);
+    
+            }
             entrenador.setUsuario(usuario);
             Entrenador savedEntrenador= this.save(entrenador);
             savedEntrenador=lugarService.assignDefaultLugares(savedEntrenador);

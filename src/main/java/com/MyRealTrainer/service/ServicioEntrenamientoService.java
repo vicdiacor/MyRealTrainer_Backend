@@ -29,6 +29,14 @@ public class ServicioEntrenamientoService {
     @Autowired
     private TarifaService tarifaService;
 
+    public Servicio setAllIdToNull(Servicio servicio){
+        servicio.setId(null);
+        servicio.getTarifas().stream().forEach(tarifa -> tarifa.setId(null));
+        return servicio;
+    }
+
+   
+
     public boolean editingMyOwnTarifas(Servicio oldService, Servicio editedService){
         // Las que tienen ID dentro de edtedService estaban en oldService
         boolean res= true;

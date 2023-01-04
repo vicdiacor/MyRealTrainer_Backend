@@ -1,7 +1,12 @@
 package com.MyRealTrainer.model;
 import java.util.List;
 import javax.persistence.*;
+import javax.validation.Valid;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 import org.springframework.lang.NonNull;
 
 @Entity
@@ -12,12 +17,15 @@ public class Entrenamiento {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NonNull
+    @NotNull
     @Min(0)
     private Integer numOrden;
 
+    @NotBlank
+    @Size(max=100)
+    private String titulo;
     
-    @NonNull
+    @NotNull
     @Enumerated(EnumType.STRING)
     private DiasSemana diaSemana;
 
@@ -26,7 +34,8 @@ public class Entrenamiento {
     @JoinColumn(name="rutina_id")
     private Rutina rutina;
 
-    @OneToMany(mappedBy = "entrenamiento")
+    @OneToMany(mappedBy = "entrenamiento",cascade = CascadeType.REMOVE)
+    @Valid
     private List<Bloque> bloques;
 
 
@@ -80,15 +89,26 @@ public class Entrenamiento {
     }
 
 
+    public String getTitulo() {
+        return titulo;
+    }
+
+
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
+    }
+
+
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((bloques == null) ? 0 : bloques.hashCode());
-        result = prime * result + ((diaSemana == null) ? 0 : diaSemana.hashCode());
         result = prime * result + ((id == null) ? 0 : id.hashCode());
         result = prime * result + ((numOrden == null) ? 0 : numOrden.hashCode());
+        result = prime * result + ((titulo == null) ? 0 : titulo.hashCode());
+        result = prime * result + ((diaSemana == null) ? 0 : diaSemana.hashCode());
         result = prime * result + ((rutina == null) ? 0 : rutina.hashCode());
+        result = prime * result + ((bloques == null) ? 0 : bloques.hashCode());
         return result;
     }
 
@@ -102,13 +122,6 @@ public class Entrenamiento {
         if (getClass() != obj.getClass())
             return false;
         Entrenamiento other = (Entrenamiento) obj;
-        if (bloques == null) {
-            if (other.bloques != null)
-                return false;
-        } else if (!bloques.equals(other.bloques))
-            return false;
-        if (diaSemana != other.diaSemana)
-            return false;
         if (id == null) {
             if (other.id != null)
                 return false;
@@ -119,13 +132,27 @@ public class Entrenamiento {
                 return false;
         } else if (!numOrden.equals(other.numOrden))
             return false;
+        if (titulo == null) {
+            if (other.titulo != null)
+                return false;
+        } else if (!titulo.equals(other.titulo))
+            return false;
+        if (diaSemana != other.diaSemana)
+            return false;
         if (rutina == null) {
             if (other.rutina != null)
                 return false;
         } else if (!rutina.equals(other.rutina))
             return false;
+        if (bloques == null) {
+            if (other.bloques != null)
+                return false;
+        } else if (!bloques.equals(other.bloques))
+            return false;
         return true;
     }
+
+
 
     
     

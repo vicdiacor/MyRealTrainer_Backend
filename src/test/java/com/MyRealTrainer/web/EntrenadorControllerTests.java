@@ -3,15 +3,14 @@ package com.MyRealTrainer.web;
 import com.MyRealTrainer.SecurityConfig.WithMockCustomUser;
 import com.MyRealTrainer.model.Entrenador;
 import com.MyRealTrainer.model.LugarEntrenamiento;
-import com.MyRealTrainer.model.Role;
 import com.MyRealTrainer.model.TipoLugar;
 import com.MyRealTrainer.model.Usuario;
-import com.MyRealTrainer.repository.EntrenadorRepository;
+
 import com.MyRealTrainer.service.CustomUserDetailsService;
 import com.MyRealTrainer.service.EntrenadorService;
-import com.MyRealTrainer.service.RoleService;
 import com.MyRealTrainer.service.UsuarioService;
 import com.MyRealTrainer.service.UtilService;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 
@@ -21,12 +20,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import java.sql.Date;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
+
 
 import javax.sql.DataSource;
 

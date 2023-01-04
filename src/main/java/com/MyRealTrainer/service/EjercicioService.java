@@ -4,13 +4,16 @@ import com.MyRealTrainer.repository.EjercicioRepository;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.MyRealTrainer.model.Ejercicio;
 import com.MyRealTrainer.model.Entrenador;
+import com.MyRealTrainer.model.Rutina;
 import com.MyRealTrainer.model.Usuario;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,6 +64,24 @@ public class EjercicioService {
         }
         
         return response;
+    }
+
+    public boolean usingPublicOrMyEjercicios(Rutina rutina,Usuario usuario){
+       
+        Map<String,Object> myEjerciciosResult = this.findByUsuario(usuario);
+        if(myEjerciciosResult.containsKey("ejercicios")){
+            List<Ejercicio> myEjercicios = (List<Ejercicio>) myEjerciciosResult.get("ejercicios");
+            Set<Long> myEjerciciosId = myEjercicios.stream().map(ejercicio -> ejercicio.getId()).collect(Collectors.toSet());
+
+            Set<Long> idEjerciciosRutina = new HashSet<Long>();
+            rutina.getEntrenamientos().stream().forEach(entrenamiento -> entrenamiento.getBloques().forEach(bloque -> idEjerciciosRutina.add(bloque.getEjercicio().getId())));
+
+            return myEjerciciosId.containsAll(idEjerciciosRutina);
+        }else{
+            return false;
+        }
+
+
     }
 
   

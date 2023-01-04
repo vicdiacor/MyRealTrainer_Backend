@@ -58,7 +58,7 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
                     .verify(token.replace(SecurityConstants.TOKEN_PREFIX, ""))
                     .getClaim("authorities").asString();        
             final Collection<SimpleGrantedAuthority> authorities =
-            Arrays.stream(roles.replace("[","").replace("]","").split(","))
+            Arrays.stream(roles.replaceAll("\\[|\\]|\\s","").split(","))
                             .map(SimpleGrantedAuthority::new)
                             .collect(Collectors.toList());
             if (user != null) {

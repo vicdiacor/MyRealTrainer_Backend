@@ -2,8 +2,10 @@ package com.MyRealTrainer.model;
 import java.time.Duration;
 import javax.persistence.*;
 import javax.validation.constraints.Digits;
+import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
-
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 import org.springframework.lang.NonNull;
 
@@ -17,21 +19,24 @@ public class Serie {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NonNull
+    @NotNull
     @Min(0)
     private Integer numOrden;
 
-    @NonNull
-    @Min(0)
+    
+    @Min(1)
+    @Max(999)
     private Integer numRepeticiones;
 
-    @NonNull
     @Min(0)
+    @Max(999)
     @Digits(fraction=2,integer=5)
     private Double peso;
 
-
-    private Duration tiempo;
+   
+    // (Max 04:59:59) 
+    @Pattern(regexp = "^0[0-4]:\\d{2}:\\d{2}$")
+    private String tiempoEntreSeries;
 
     // Relaciones
 
@@ -39,9 +44,6 @@ public class Serie {
     @JoinColumn(name="bloque_id")
     private Bloque bloque;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name="ejercicio_id")
-    private Ejercicio ejercicio;
 
     public Long getId() {
         return id;
@@ -75,13 +77,7 @@ public class Serie {
         this.peso = peso;
     }
 
-    public Duration getTiempo() {
-        return tiempo;
-    }
-
-    public void setTiempo(Duration tiempo) {
-        this.tiempo = tiempo;
-    }
+    
 
     public Bloque getBloque() {
         return bloque;
@@ -91,25 +87,28 @@ public class Serie {
         this.bloque = bloque;
     }
 
-    public Ejercicio getEjercicio() {
-        return ejercicio;
+
+    public Serie() {
     }
 
-    public void setEjercicio(Ejercicio ejercicio) {
-        this.ejercicio = ejercicio;
+    public String getTiempoEntreSeries() {
+        return tiempoEntreSeries;
+    }
+
+    public void setTiempoEntreSeries(String tiempoEntreSeries) {
+        this.tiempoEntreSeries = tiempoEntreSeries;
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((bloque == null) ? 0 : bloque.hashCode());
-        result = prime * result + ((ejercicio == null) ? 0 : ejercicio.hashCode());
         result = prime * result + ((id == null) ? 0 : id.hashCode());
         result = prime * result + ((numOrden == null) ? 0 : numOrden.hashCode());
         result = prime * result + ((numRepeticiones == null) ? 0 : numRepeticiones.hashCode());
         result = prime * result + ((peso == null) ? 0 : peso.hashCode());
-        result = prime * result + ((tiempo == null) ? 0 : tiempo.hashCode());
+        result = prime * result + ((tiempoEntreSeries == null) ? 0 : tiempoEntreSeries.hashCode());
+        result = prime * result + ((bloque == null) ? 0 : bloque.hashCode());
         return result;
     }
 
@@ -122,16 +121,6 @@ public class Serie {
         if (getClass() != obj.getClass())
             return false;
         Serie other = (Serie) obj;
-        if (bloque == null) {
-            if (other.bloque != null)
-                return false;
-        } else if (!bloque.equals(other.bloque))
-            return false;
-        if (ejercicio == null) {
-            if (other.ejercicio != null)
-                return false;
-        } else if (!ejercicio.equals(other.ejercicio))
-            return false;
         if (id == null) {
             if (other.id != null)
                 return false;
@@ -152,15 +141,17 @@ public class Serie {
                 return false;
         } else if (!peso.equals(other.peso))
             return false;
-        if (tiempo == null) {
-            if (other.tiempo != null)
+        if (tiempoEntreSeries == null) {
+            if (other.tiempoEntreSeries != null)
                 return false;
-        } else if (!tiempo.equals(other.tiempo))
+        } else if (!tiempoEntreSeries.equals(other.tiempoEntreSeries))
+            return false;
+        if (bloque == null) {
+            if (other.bloque != null)
+                return false;
+        } else if (!bloque.equals(other.bloque))
             return false;
         return true;
-    }
-
-    public Serie() {
     }
     
 }

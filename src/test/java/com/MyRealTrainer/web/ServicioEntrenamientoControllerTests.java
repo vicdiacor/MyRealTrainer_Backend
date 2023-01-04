@@ -1,22 +1,18 @@
 package com.MyRealTrainer.web;
 
 import com.MyRealTrainer.SecurityConfig.WithMockCustomUser;
-import com.MyRealTrainer.model.Direccion;
+
 import com.MyRealTrainer.model.Entrenador;
 import com.MyRealTrainer.model.LugarEntrenamiento;
-import com.MyRealTrainer.model.Role;
 import com.MyRealTrainer.model.Servicio;
 import com.MyRealTrainer.model.Tarifa;
-import com.MyRealTrainer.model.TipoLugar;
 import com.MyRealTrainer.model.Usuario;
-import com.MyRealTrainer.repository.EntrenadorRepository;
+
 import com.MyRealTrainer.service.CustomUserDetailsService;
-import com.MyRealTrainer.service.EntrenadorService;
-import com.MyRealTrainer.service.LugarEntrenamientoService;
-import com.MyRealTrainer.service.RoleService;
 import com.MyRealTrainer.service.ServicioEntrenamientoService;
 import com.MyRealTrainer.service.UsuarioService;
 import com.MyRealTrainer.service.UtilService;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -25,12 +21,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import java.sql.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
 import javax.sql.DataSource;
 
@@ -39,7 +33,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -47,8 +40,6 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.http.MediaType;
-
-
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @WebMvcTest(controllers = ServicioEntrenamientoController.class)

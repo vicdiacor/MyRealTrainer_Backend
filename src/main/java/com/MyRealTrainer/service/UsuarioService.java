@@ -2,13 +2,17 @@ package com.MyRealTrainer.service;
 
 import com.MyRealTrainer.repository.UsuarioRepository;
 
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import com.MyRealTrainer.model.Role;
 import com.MyRealTrainer.model.Usuario;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +21,13 @@ public class UsuarioService {
 
 	@Autowired
     private UsuarioRepository repository;
+
+    
+    @Autowired
+    private RoleService roleService;
+    
+    @Autowired
+    private PasswordEncoder passwordEncoder;
     
     
 	public List<Usuario> findAll(){
@@ -47,6 +58,32 @@ public class UsuarioService {
         
     }
 
+    public Usuario registerNewUser(Usuario usuario){
+        // create user object
+        usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
+        Date fechaNacimiento = usuario.getFechaNacimiento();
+        fechaNacimiento.setHours(0);
+        fechaNacimiento.setMinutes(0);
+        fechaNacimiento.setSeconds(0);
+        usuario.setFechaNacimiento(fechaNacimiento);
+
+        // add URL Foto perfil -- Falta por hacer
+
+        // add Tipo de rol cliente
+
+        Optional<Role> roles = roleService.findByName("ROLE_CLIENTE");
+        if(roles.isPresent()){
+            usuario.setRoles(Collections.singleton(roles.get()));
+        }else{
+            Role rolCliente= new Role();
+            rolCliente.setName("ROLE_CLIENTE");
+            roleService.save(rolCliente);
+            usuario.setRoles(Collections.singleton(rolCliente));
+
+        }
+        return this.save(usuario);
+
+    }
  
 
     @Transactional

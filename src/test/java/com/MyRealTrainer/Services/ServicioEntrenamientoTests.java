@@ -10,26 +10,24 @@ import static org.mockito.Mockito.verify;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-import org.mockito.Mock;
+
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import com.MyRealTrainer.model.Entrenador;
-import com.MyRealTrainer.model.LugarEntrenamiento;
+
 import com.MyRealTrainer.model.Servicio;
 import com.MyRealTrainer.model.Tarifa;
 import com.MyRealTrainer.model.Usuario;
 import com.MyRealTrainer.repository.ServicioEntrenamientoRepository;
-import com.MyRealTrainer.repository.TarifaRepository;
-import com.MyRealTrainer.service.LugarEntrenamientoService;
 import com.MyRealTrainer.service.ServicioEntrenamientoService;
 import com.MyRealTrainer.service.TarifaService;
 

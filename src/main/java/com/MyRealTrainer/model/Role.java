@@ -2,7 +2,7 @@ package com.MyRealTrainer.model;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 
-import org.springframework.lang.NonNull;
+
 
 @Entity
 @Table(name = "roles")

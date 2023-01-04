@@ -68,7 +68,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 // se sirve desde esta misma página.
 
                 http.csrf().ignoringAntMatchers("/h2-console/**"); 
-                http.headers().frameOptions().sameOrigin();
+                http.headers().frameOptions(); // .sameOrigin();
 				http.cors().configurationSource(corsConfigurationSource()).and().csrf().disable();
 
 	}

@@ -6,18 +6,21 @@ import com.MyRealTrainer.repository.LugarEntrenamientoRepository;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.MyRealTrainer.model.Direccion;
 import com.MyRealTrainer.model.Entrenador;
 import com.MyRealTrainer.model.LugarEntrenamiento;
+
+import com.MyRealTrainer.model.Tarifa;
 import com.MyRealTrainer.model.TipoLugar;
 import com.MyRealTrainer.model.Usuario;
 
-import org.apache.bcel.Repository;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -115,6 +118,13 @@ public class LugarEntrenamientoService {
     @Transactional
     public void deleteById(Long id){ 
         lugarRepository.deleteById(id);
+    }
+
+    public boolean usingMyOwnLugares(List<Tarifa> tarifaList, List<LugarEntrenamiento> realLugares){
+        Set<Long> lugaresId = new HashSet<Long>();
+        tarifaList.stream().forEach(tarifa -> tarifa.getLugares().stream().forEach(lugar -> lugaresId.add(lugar.getId())));
+        Set<Long> realLugaresId = realLugares.stream().map(lugar -> lugar.getId()).collect(Collectors.toSet());
+        return realLugaresId.containsAll(lugaresId);
     }
     
 }
