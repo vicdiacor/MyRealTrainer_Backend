@@ -9,6 +9,8 @@ import javax.validation.constraints.Pattern;
 
 import org.springframework.lang.NonNull;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "bloques")
 public class Bloque {
@@ -18,7 +20,7 @@ public class Bloque {
     private Long id;
 
     // Max 29:59
-    @Pattern(regexp = "^[0-2]\\d:\\d{2}$")
+    @Pattern(regexp = "^[0-2]\\d:[0-5]\\d$")
     private String tiempoEntreSeries;
 
     @NotNull
@@ -41,6 +43,7 @@ public class Bloque {
 
     @ManyToOne(optional = false)
     @JoinColumn(name="entrenamiento_id")
+    @JsonIgnore
     private Entrenamiento entrenamiento;
 
     public Long getId() {

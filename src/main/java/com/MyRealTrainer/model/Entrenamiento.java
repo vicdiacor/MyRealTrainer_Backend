@@ -9,6 +9,8 @@ import javax.validation.constraints.Size;
 
 import org.springframework.lang.NonNull;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "entrenamientos")
 public class Entrenamiento {
@@ -32,6 +34,7 @@ public class Entrenamiento {
     
     @ManyToOne(optional = false)
     @JoinColumn(name="rutina_id")
+    @JsonIgnore
     private Rutina rutina;
 
     @OneToMany(mappedBy = "entrenamiento",cascade = CascadeType.REMOVE)

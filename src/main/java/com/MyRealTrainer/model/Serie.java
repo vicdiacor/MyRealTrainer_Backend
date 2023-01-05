@@ -9,6 +9,8 @@ import javax.validation.constraints.Pattern;
 
 import org.springframework.lang.NonNull;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "series")
 public class Serie {
@@ -35,13 +37,14 @@ public class Serie {
 
    
     // (Max 04:59:59) 
-    @Pattern(regexp = "^0[0-4]:\\d{2}:\\d{2}$")
-    private String tiempoEntreSeries;
+    @Pattern(regexp = "^0[0-4]:[0-5]\\d:[0-5]\\d$")
+    private String tiempo;
 
     // Relaciones
 
     @ManyToOne(optional = false)
     @JoinColumn(name="bloque_id")
+    @JsonIgnore
     private Bloque bloque;
 
 
@@ -87,16 +90,16 @@ public class Serie {
         this.bloque = bloque;
     }
 
+    public String getTiempo() {
+        return tiempo;
+    }
+
+    public void setTiempo(String tiempo) {
+        this.tiempo = tiempo;
+    }
+
 
     public Serie() {
-    }
-
-    public String getTiempoEntreSeries() {
-        return tiempoEntreSeries;
-    }
-
-    public void setTiempoEntreSeries(String tiempoEntreSeries) {
-        this.tiempoEntreSeries = tiempoEntreSeries;
     }
 
     @Override
@@ -107,7 +110,7 @@ public class Serie {
         result = prime * result + ((numOrden == null) ? 0 : numOrden.hashCode());
         result = prime * result + ((numRepeticiones == null) ? 0 : numRepeticiones.hashCode());
         result = prime * result + ((peso == null) ? 0 : peso.hashCode());
-        result = prime * result + ((tiempoEntreSeries == null) ? 0 : tiempoEntreSeries.hashCode());
+        result = prime * result + ((tiempo == null) ? 0 : tiempo.hashCode());
         result = prime * result + ((bloque == null) ? 0 : bloque.hashCode());
         return result;
     }
@@ -141,10 +144,10 @@ public class Serie {
                 return false;
         } else if (!peso.equals(other.peso))
             return false;
-        if (tiempoEntreSeries == null) {
-            if (other.tiempoEntreSeries != null)
+        if (tiempo == null) {
+            if (other.tiempo != null)
                 return false;
-        } else if (!tiempoEntreSeries.equals(other.tiempoEntreSeries))
+        } else if (!tiempo.equals(other.tiempo))
             return false;
         if (bloque == null) {
             if (other.bloque != null)
@@ -153,5 +156,7 @@ public class Serie {
             return false;
         return true;
     }
+
+   
     
 }

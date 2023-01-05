@@ -90,15 +90,17 @@ public class RutinaService {
                 // Save entrenamientos, bloques & series
                 for (Entrenamiento entrenamiento : entrenamientosList) {
                     entrenamiento.setRutina(rutina);
+                    List<Bloque> listBloques = entrenamiento.getBloques();
                     entrenamiento.setBloques(null);
                     entrenamiento = entrenamientoService.save(entrenamiento);
                     List<Bloque> savedBloques = new ArrayList<Bloque>();
-                    for (Bloque bloque : entrenamiento.getBloques()){
+                    for (Bloque bloque : listBloques){
                         bloque.setEntrenamiento(entrenamiento);
+                        List<Serie> listSeries = bloque.getSeries();
                         bloque.setSeries(null);
                         bloque = bloqueService.save(bloque);
                         List<Serie> savedSeries = new ArrayList<Serie>();
-                        for (Serie serie : bloque.getSeries()){
+                        for (Serie serie : listSeries){
                             serie.setBloque(bloque);
                             savedSeries.add(serieService.save(serie));
                             }
