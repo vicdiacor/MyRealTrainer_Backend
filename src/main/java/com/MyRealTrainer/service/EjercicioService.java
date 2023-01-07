@@ -66,21 +66,15 @@ public class EjercicioService {
         return response;
     }
 
-    public boolean usingPublicOrMyEjercicios(Rutina rutina,Usuario usuario){
-       
-        Map<String,Object> myEjerciciosResult = this.findByUsuario(usuario);
-        if(myEjerciciosResult.containsKey("ejercicios")){
-            List<Ejercicio> myEjercicios = (List<Ejercicio>) myEjerciciosResult.get("ejercicios");
+    public Map<String,Object> getMyEjerciciosId(Usuario usuario){
+        Map<String,Object> response =   this.findByUsuario(usuario);
+
+        if(response.containsKey("ejercicios")){
+            List<Ejercicio> myEjercicios = (List<Ejercicio>) response.get("ejercicios");
             Set<Long> myEjerciciosId = myEjercicios.stream().map(ejercicio -> ejercicio.getId()).collect(Collectors.toSet());
-
-            Set<Long> idEjerciciosRutina = new HashSet<Long>();
-            rutina.getEntrenamientos().stream().forEach(entrenamiento -> entrenamiento.getBloques().forEach(bloque -> idEjerciciosRutina.add(bloque.getEjercicio().getId())));
-
-            return myEjerciciosId.containsAll(idEjerciciosRutina);
-        }else{
-            return false;
+            response.put("myEjerciciosId", myEjerciciosId);
         }
-
+        return response;
 
     }
 

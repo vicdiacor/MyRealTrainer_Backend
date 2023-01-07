@@ -20,6 +20,7 @@ public class Bloque {
     private Long id;
 
     // Max 29:59
+    @NotNull
     @Pattern(regexp = "^[0-2]\\d:[0-5]\\d$")
     private String tiempoEntreSeries;
 
@@ -32,7 +33,7 @@ public class Bloque {
     @Enumerated(EnumType.STRING)
     private TipoBloque tipoBloque;
 
-    @OneToMany(mappedBy = "bloque",cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "bloque",cascade = CascadeType.ALL)
     @Valid
     private List<Serie> series;
 

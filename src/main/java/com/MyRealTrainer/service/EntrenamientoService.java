@@ -1,8 +1,7 @@
 package com.MyRealTrainer.service;
 
 import com.MyRealTrainer.repository.EntrenamientoRepository;
-
-
+import com.MyRealTrainer.model.Bloque;
 import com.MyRealTrainer.model.Entrenamiento;
 
 
@@ -16,11 +15,18 @@ public class EntrenamientoService {
 	@Autowired
     private EntrenamientoRepository entrenamientoRepository;
 
+    @Autowired
+    private BloqueService bloqueService;
+
   
     @Transactional
     public Entrenamiento save(Entrenamiento entrenamiento){ 
         return entrenamientoRepository.save(entrenamiento);
     }
+
+
+
+    
 
     @Transactional
     public void deleteById(Long id){ 

@@ -39,7 +39,7 @@ public class Rutina {
                inverseJoinColumns = @JoinColumn(name = "etiquetas_id", referencedColumnName = "id"))
     private Set<Etiqueta> etiquetas = new HashSet<>();
 
-    @OneToMany(mappedBy = "rutina",cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "rutina",cascade = CascadeType.ALL)
     @Valid
     private List<Entrenamiento> entrenamientos;
     

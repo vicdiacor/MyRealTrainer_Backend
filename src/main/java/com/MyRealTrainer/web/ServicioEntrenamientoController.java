@@ -98,7 +98,7 @@ public class ServicioEntrenamientoController {
 
     
     @SuppressWarnings("rawtypes")
-    @PreAuthorize("hasAnyRole('ROLE_ENTRENADOR','ROLE_CLIENTE','ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_ENTRENADOR','ROLE_ADMIN')")
     @GetMapping("/{email}")
     public ResponseEntity findMyServicios(@PathVariable String email) {
     Map<String,Object> response = new HashMap<>();
@@ -137,7 +137,7 @@ public class ServicioEntrenamientoController {
     }
     Optional<Servicio> oldService = servicioEntrenamientoService.findById(id);
     if(!oldService.isPresent()){
-        errores.add("Este servicio no existe");
+        errores.add("El servicio que intentas editar no existe");
         response.put("errores", errores);
 	    return ResponseEntity.badRequest().body(response);
 
@@ -145,6 +145,7 @@ public class ServicioEntrenamientoController {
         boolean editingMyOwnTarifas= servicioEntrenamientoService.editingMyOwnTarifas(oldService.get(), editedService);
         if(editingMyOwnTarifas){
              if(lugarService.usingMyOwnLugares(editedService.getTarifas(), oldService.get().getEntrenador().getLugares())){
+                // Esto habria que haerlo despues de realizar todas las comprobaciones que se hacendentro de construct and save =============================
                 servicioEntrenamientoService.deleteMissingTarifas(editedService,oldService.get());
                 BeanUtils.copyProperties(editedService, oldService.get(),"id","entrenador");
                 Map<String,Object> responseService= servicioEntrenamientoService.constructAndSave(oldService.get(), oldService.get().getEntrenador().getUsuario());
@@ -163,7 +164,7 @@ public class ServicioEntrenamientoController {
              }
             
         }else{
-            errores.add("No puedes modificar o asociar a tus servicios, tarifas de otros usuarios");
+            errores.add("No puedes asociar tarifas de otros servicios al actual");
             response.put("errores", errores);
             return ResponseEntity.badRequest().body(response);
         }

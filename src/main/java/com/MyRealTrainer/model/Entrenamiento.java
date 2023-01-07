@@ -37,7 +37,7 @@ public class Entrenamiento {
     @JsonIgnore
     private Rutina rutina;
 
-    @OneToMany(mappedBy = "entrenamiento",cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "entrenamiento",cascade = CascadeType.ALL)
     @Valid
     private List<Bloque> bloques;
 
