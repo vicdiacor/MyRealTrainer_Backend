@@ -14,6 +14,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -150,15 +151,28 @@ public class RutinaController {
         }
     }
 
-     
-    @SuppressWarnings("rawtypes")
-    @PreAuthorize("hasAnyRole('ROLE_ENTRENADOR','ROLE_ADMIN')")
-    @PutMapping("/prueba")
-    public ResponseEntity prueba() {
-        rutinaService.prueba();
-        return ResponseEntity.ok("Perfe");
-
-    }
     
+@SuppressWarnings("rawtypes")
+@PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_ENTRENADOR')")
+@DeleteMapping("/{id}")
+ public ResponseEntity deleteRutina(@PathVariable Long id) {
+    Map<String,Object> response = new HashMap<>();
+    List<String> errores = new ArrayList<String>();
+    Optional<Rutina> oldRutina = rutinaService.findById(id);
+    if(!oldRutina.isPresent()){
+        errores.add("No puedes eliminar una rutina que no existe");
+        response.put("errores", errores);
+	    return ResponseEntity.badRequest().body(response);
+
+    }else if(SecurityContextHolder.getContext().getAuthentication().getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN")) || oldRutina.get().getEntrenador().getUsuario().getEmail().equals(SecurityContextHolder.getContext().getAuthentication().getPrincipal())){
+        rutinaService.deleteById(oldRutina.get().getId());
+        return ResponseEntity.ok(oldRutina.get());
+       
+    }else{
+        errores.add("No tienes permiso para eliminar una rutina de otro entrenador");
+        response.put("errores", errores);
+        return ResponseEntity.badRequest().body(response);
+    }
+ }
    
 }
